@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat Facts</title>
+</head>
+<body>
+    <p id="dact-label"></p>
+    <button onclick="loadFact()">Give me a cat fact!</button>
+
+    <script>
+        function loadFact() {
+            var request = new XMLHttpRequest();
+            request.open("GET", "https://catfact.ninja/fact");
+            request.onload = loadedFact;
+            request.send();
+
+            function loadedFact(event) {
+                //alert(event.target.responseText);
+                var responseData = JSON.parse(event.target.responseText);
+                document.getElementById("dact-label").innerText = responseData.fact;
+            }
+        }
+    </script>
+</body>
+</html>
