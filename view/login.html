@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="./stylesheet/stylesheet.css">
+    <title>Login</title>
+</head>
+<body>
+    <div class="body-for-login-p" id="body-for-login-p">
+        <div class="forms-container">
+            <form action="" id="login-form" onsubmit="authenticate()">
+                <div class="items">
+                 <label for="user-login">Benutzer: </label>
+                 <input type="text" name="user-login" id="user-login">
+                </div>
+                <div class="items">
+                 <label for="password-fild">Password: </label>
+                 <input type="password" name="password-fild" id="password-fild">
+                </div>
+                <div class="items">
+                 <button type="button" onclick="authenticate()">Einlogen</button>
+                </div>
+             </form>
+        </div>    
+    </div>
+    
+    <div id="table-container"></div>
+
+    <script src="../controller/authentication.js"></script>
+</body>
+</html>

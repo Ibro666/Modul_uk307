@@ -1,0 +1,69 @@
+body {
+    height: 98vh;
+}
+
+.body-for-login-p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70%;
+}
+
+.forms-container {
+    height: 50%;
+    width: 50%;
+    background-color: #dbd5d54f;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.items {
+    display: flex;
+    justify-content: center;
+    margin: 1%;
+    padding: 6%;
+}
+
+.items label {
+    margin-right: 15px;
+}
+
+/* tabelle stylen */
+.content-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50%;
+}
+
+table {
+    border-style: double;
+}
+
+.table-cat-content th {
+    background-color: rgba(53, 173, 221, 0.911);
+}
+
+.add-btn {
+    border-radius: 1%;
+    margin: 1%;
+    background-color: rgb(20, 172, 134);
+}
+
+.table-cat-content td {
+
+}
+
+.edit-btn {
+    border-radius: 1%;
+    margin: 1%;
+    background-color: rgb(189, 177, 12);
+}
+
+.del-btn {
+    border-radius: 1%;
+    margin: 1%;
+    background-color: rgb(161, 7, 79);
+}
