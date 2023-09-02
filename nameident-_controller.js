@@ -15,7 +15,7 @@ function loadFact() {
         //alert(event.target.responseText);
         var responseData = JSON.parse(event.target.responseText);
         document.getElementById("table").innerText = responseData.fact;
-        //console.log(responseData.country.length);
+        console.log(responseData);
         
         for (var i = 0; i < responseData.country.length; i++) {
             //var responseData = responseData.country[i];
