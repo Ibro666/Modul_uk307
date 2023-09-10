@@ -1,5 +1,5 @@
 body {
-    height: 98vh;
+    /*height: 98vh;*/
 }
 
 .body-for-login-p {
@@ -30,6 +30,14 @@ body {
     margin-right: 15px;
 }
 
+/* navigation */
+.nav-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2%;
+}
+
 /* tabelle stylen */
 .content-container {
     display: flex;
@@ -42,7 +50,7 @@ table {
     border-style: double;
 }
 
-.table-cat-content th {
+.product-table th {
     background-color: rgba(53, 173, 221, 0.911);
 }
 
@@ -52,7 +60,7 @@ table {
     background-color: rgb(20, 172, 134);
 }
 
-.table-cat-content td {
+.product-table td {
 
 }
 
@@ -66,4 +74,12 @@ table {
     border-radius: 1%;
     margin: 1%;
     background-color: rgb(161, 7, 79);
+}
+
+/* formular container */
+.input-data {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2%;
 }
