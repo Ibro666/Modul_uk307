@@ -1,5 +1,13 @@
 body {
-    /*height: 98vh;*/
+    height: 98vh;
+}
+
+input {
+    outline: none;
+}
+
+input:hover, input:focus {
+    border-color: rgb(69, 112, 5);
 }
 
 .body-for-login-p {
@@ -7,16 +15,28 @@ body {
     justify-content: center;
     align-items: center;
     height: 70%;
+    width: 60%;
+    position: absolute;
+    top: 15%;
+    bottom: 15%;
+    left: 20%;
+    right: 20%;
 }
 
 .forms-container {
-    height: 50%;
-    width: 50%;
-    background-color: #dbd5d54f;
-    border-radius: 8px;
+    height: 80%;
+    width: 60%;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 19px;
+    background: linear-gradient(315deg, #cacaca, #f0f0f0);
+    box-shadow:  -22px -22px 44px #bebebe,
+                    22px 22px 44px #ffffff;
+}
+
+.forms-container form {
+    width: 100%;
 }
 
 .items {
@@ -24,30 +44,116 @@ body {
     justify-content: center;
     margin: 1%;
     padding: 6%;
+    padding-bottom: 1%;
 }
 
 .items label {
-    margin-right: 15px;
+    margin: 1%;
+    padding: 8%;
+    font-size: 20px;
 }
+
+.items input {
+    border-radius: 4em 1em / 1em 4em;
+    margin: 1%;
+    padding: 4%;
+    width: 70%;
+    font-size: 18px;
+    box-shadow: inset 2px 5px 10px #bebebe;
+    background: linear-gradient(315deg, #cacaca, #f0f0f0);
+    color: #000000;
+}
+
+.button {
+    padding: 0%;
+    padding-top: 4%;
+}
+
+.items button {
+    border-radius: 4em 1em / 1em 4em;
+    width: 60%;
+    padding: 5%;
+    background: #6ac97f;
+    box-shadow: -5px -5px 20px #b0b0b0dc, 
+                10px 10px 25px #ffffff
+}
+
+.items button:active {
+    background: linear-gradient(315deg, #6ac97f, #f0f0f0);
+    box-shadow: 0px 0px 0px #b0b0b0dc, 
+                0px 0px 0px #ffffff
+}
+
+/* errors */
+.item input {
+    border-color: red;
+    
+}
+
+.error-message {
+    color: red;
+    font-size: 18px;
+    text-align: center;
+    text-shadow: 5px 5px 5px #5e5e5e;
+}
+
+.error-input {
+    border-color: red;
+}
+
 
 /* navigation */
 .nav-content {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 2%;
+    margin: 4%;
+    padding: 1%;
+    border-radius: 19px;
+    background: linear-gradient(315deg, #cacaca, #f0f0f0);
+    box-shadow:  -22px -22px 44px #bebebe,
+                    22px 22px 44px #ffffff;
 }
 
+.nav-content input {
+    border-radius: 4em 1em / 1em 4em;
+    background: none;
+    outline: none;
+    margin: 1%;
+    padding: 1%;
+    width: 25%;
+    font-size: 18px;
+    box-shadow: inset 2px 5px 10px #bebebe;
+    background: linear-gradient(315deg, #cacaca, #f0f0f0);
+    color: #000000;
+}
+
+.nav-content button { 
+    border-radius: 4em 1em / 1em 4em;
+    width: 12%;
+    padding: 1%;
+    background: #6ac97f;
+    box-shadow: -5px -5px 20px #b0b0b0dc, 
+                10px 10px 25px #ffffff
+}
+
+.nav-content button:active {
+    background: linear-gradient(315deg, #6ac97f, #f0f0f0);
+    box-shadow: 0px 0px 0px #b0b0b0dc, 
+                0px 0px 0px #ffffff
+}
+
+
 /* tabelle stylen */
-.content-container {
+.content {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 50%;
-}
-
-table {
-    border-style: double;
+    padding: 1%;
+    border-radius: 19px;
+    background: linear-gradient(315deg, #cacaca, #f0f0f0);
+    box-shadow:  -22px -22px 44px #bebebe,
+                    22px 22px 44px #ffffff;
 }
 
 .product-table th {
@@ -55,9 +161,12 @@ table {
 }
 
 .add-btn {
-    border-radius: 1%;
     margin: 1%;
-    background-color: rgb(20, 172, 134);
+    border-radius: 4em 1em / 1em 4em;
+    padding: 6%;
+    background: rgb(20, 172, 134);
+    box-shadow: -5px -5px 20px #b0b0b0dc, 
+                10px 10px 25px #ffffff
 }
 
 .product-table td {
@@ -65,15 +174,21 @@ table {
 }
 
 .edit-btn {
-    border-radius: 1%;
     margin: 1%;
-    background-color: rgb(189, 177, 12);
+    border-radius: 4em 1em / 1em 4em;
+    padding: 6%;
+    background: rgb(189, 177, 12);
+    box-shadow: -5px -5px 20px #b0b0b0dc, 
+                10px 10px 25px #ffffff
 }
 
 .del-btn {
-    border-radius: 1%;
     margin: 1%;
-    background-color: rgb(161, 7, 79);
+    border-radius: 4em 1em / 1em 4em;
+    padding: 6%;
+    background: rgb(161, 7, 79);
+    box-shadow: -5px -5px 20px #b0b0b0dc, 
+                10px 10px 25px #ffffff
 }
 
 /* formular container */

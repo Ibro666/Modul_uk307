@@ -1,106 +1,3 @@
-//select table
-function selectTableValues() {
-    //var request = new XMLHttpRequest();                             
-    //request.open("GET", "https://campus.csbe.ch/sollberger-manuel/uek307/Categories");
-    //request.setRequestHeader('Authorization', `Bearer ${}`);
-    //request.onload = loadedFact;
-    //request.send();
-
-    // Layout definieren
-    const contentContainer = document.createElement("div");
-    const content = document.createElement("div");
-    contentContainer.setAttribute("class", "content-container");
-
-    // navigation 
-    const toolBar = document.createElement("div");
-
-    // tabelle definieren
-    const table = document.createElement("table");
-    const rowHeader = document.createElement("tr");
-    table.setAttribute("name", "caregory-table");
-    table.setAttribute("class", "table-cat-content");
-
-    // titel der tabelle
-    const tableHeaderDiscribe = document.createElement("th");
-    const tableHeaderAktive = document.createElement("th");
-    const tableHeaderSum = document.createElement("th");
-    const addItem = document.createElement("th");
-    var thDiscribe = document.createTextNode("Bezeichnung");
-    var thAktive = document.createTextNode("Aktiv");
-    var thSum = document.createTextNode("Summe");
-    tableHeaderDiscribe.appendChild(thDiscribe);
-    tableHeaderAktive.appendChild(thAktive);
-    tableHeaderSum.appendChild(thSum);
-
-    // hinzufügen button
-    const addBtn = document.createElement("button");
-    var addBtnText = document.createTextNode("Hinzufügen");
-    addBtn.appendChild(addBtnText);
-    addBtn.setAttribute("class", "add-btn");
-    addBtn.setAttribute("type", "button");
-    addBtn.setAttribute("onclick", "");
-
-    // bearbeiten button 
-    const editBtn = document.createElement("button");
-    var editBtnText = document.createTextNode("Bearbeiten");
-    editBtn.appendChild(editBtnText);
-    editBtn.setAttribute("class", "edit-btn");
-    editBtn.setAttribute("type", "button");
-    editBtn.setAttribute("onclick", "");
-
-    // löschen butten
-    const delBtn = document.createElement("button");
-    var delBtnText = document.createTextNode("Löschen");
-    delBtn.appendChild(delBtnText);
-    delBtn.setAttribute("class", "del-btn");
-    delBtn.setAttribute("type", "button");
-    delBtn.setAttribute("onclick", "");
-
-    //table = responseData.fact;
-    contentContainer.appendChild(content);
-    contentContainer.appendChild(toolBar);
-    content.appendChild(table);
-    table.appendChild(rowHeader);
-    rowHeader.appendChild(tableHeaderDiscribe);
-    rowHeader.appendChild(tableHeaderAktive);
-    rowHeader.appendChild(tableHeaderSum);
-    rowHeader.appendChild(addItem);
-    addItem.appendChild(addBtn);
-
-    // tabelle befüllen
-    function loadedFact(event) {   
-        var responseData = JSON.parse(event.target.responseText);
-        document.getElementsByName("caregory-table").innerText = responseData.fact;
-        
-        for (var i = 0; i < responseData.length; i++) {
-            var responseData = responseData[i];
-
-            var row = document.createElement("tr");
-            var idColumn = document.createElement("td");
-            var statColumn = document.createElement("td");
-            var nameColumn = document.createElement("td");
-            var editItem = document.createElement("td");
-            var delItem = document.createElement("td");      
-
-            table.appendChild(row);
-        
-            table.appendChild(idColumn);
-            idColumn.innerText = responseData.category_id;
-        
-            table.appendChild(statColumn);
-            statColumn.innerText = responseData.active;
-
-            table.appendChild(nameColumn);
-            nameColumn.innerText = responseData.name;
-
-            table.appendChild(editItem);
-            table.appendChild(delItem);
-        }
-    }
-
-}
-
-
 const body          = document.getElementsByTagName("body");
 var messaCont       = document.createElement("div");
 var messagePa       = document.createElement("p");                                                                                  // fehlermeldungen oder hinweise in diesem paragraf ausgeben
@@ -113,7 +10,7 @@ var table           = document.getElementById("product-table");
 var inData          = document.getElementById("input-data");                                                                        // formular abschnitt im index-file ansprechen
 var content         = document.createElement("div");                                                                                // formular container
 content.setAttribute("class", "add-content");
-let temp            = "";
+let temp            = "";                                                                                                           // im temp soll der aktuell geladene formular gespeichert werden.
 let pageC           = "";                                                                                                           // der aktuell geladene seite soll unabhängig von seiner inhalt bemerkt werden
 
 // seite wechseln
@@ -123,15 +20,15 @@ pagChan.setAttribute("type", "button");
 pagChan.setAttribute("class", "change-to-page");
 pagChan.appendChild(pagChanBtnText);
 navCont.appendChild(pagChan);
-pagChan.addEventListener("click", () => { if (pageC == 0) {
-                                            loadTableProduct();
-                                            pagChan.innerHTML = "";
-                                            pagChanBtnText  = document.createTextNode("Kategorien");
+pagChan.addEventListener("click", () => { if (pageC > 0) {
+                                            loadTableCategory();
+                                            pagChan.innerHTML   = "";
+                                            pagChanBtnText      = document.createTextNode("Produkte");                                        
                                             pagChan.appendChild(pagChanBtnText);
                                           } else {
-                                            loadTableCategory();
-                                            pagChan.innerHTML = "";
-                                            pagChanBtnText  = document.createTextNode("Produkte");                                        
+                                            loadTableProduct();
+                                            pagChan.innerHTML   = "";
+                                            pagChanBtnText      = document.createTextNode("Kategorien");
                                             pagChan.appendChild(pagChanBtnText);
                                           } 
                                         });
@@ -139,7 +36,8 @@ pagChan.addEventListener("click", () => { if (pageC == 0) {
 // suchfeld
 const searchFild    = document.createElement("input");
 searchFild.setAttribute("type", "text");
-
+let valToSearch     = "";
+searchFild.onchange = () => { valToSearch = searchFild.value };
 const searchBtn     = document.createElement("button");
 var searchBtnText   = document.createTextNode("suchen");
 searchBtn.setAttribute("type", "button");
@@ -147,6 +45,13 @@ searchBtn.setAttribute("class", "search-btn");
 searchBtn.appendChild(searchBtnText);
 navCont.appendChild(searchFild);
 navCont.appendChild(searchBtn);
+searchBtn.addEventListener("click", () => { if (pageC > 0) {
+                                               loadTableProduct(valToSearch);
+                                            } else {
+                                               loadTableCategory(valToSearch);
+                                            }
+                                          });
+
 
 // button zu abmelden
 const logoutBtn     = document.createElement("button");
@@ -156,7 +61,7 @@ logoutBtn.setAttribute("class", "logout-btn");
 logoutBtn.appendChild(logoutBtnText);
 navCont.appendChild(logoutBtn);
 logoutBtn.addEventListener("click", () => {  
-                                            location.href = "login.html";
+                                            location.href = "./login.php";
                                           });
 
 // hinzufügen button erzeugen
@@ -173,10 +78,13 @@ function addNewItem() {                                                         
 // neue produkte hinzufügen, die daten aus inputfelder müssen als paremeter mitgegeben werden
 function addItems(sku, active, cat, name, img, desc, price, stock) {
     var request = new XMLHttpRequest();
-    request.open("POST", "http://localhost:8888/API/V1/Product/" + sku);
-    //request.open("POST", "https://campus.csbe.ch/sollberger-manuel/uek307/Category");
-    request.onload = loadResponseMessage;
-    var str     = '{"sku":"' + sku + 
+    var str     = "";
+
+    if (pageC > 0) {
+        request.open("POST", "http://localhost:8888/API/V1/Product/" + sku);
+        //request.open("POST", "https://campus.csbe.ch/sollberger-manuel/uek307/Category");
+        //    request.open("POST", "");
+        str     = '{"sku":"' + sku + 
                   '","active":"' + active + 
                   '","category":"' + cat + 
                   '","name":"' + name + 
@@ -184,22 +92,38 @@ function addItems(sku, active, cat, name, img, desc, price, stock) {
                   '","description":"' + desc + 
                   '","price":"' + price + 
                   '","stock":"' + stock + '"}';
-    //console.log(str);                                                                                                         // prüfen ob der json daten den richtigen format haben
+    } else {
+        request.open("POST", "http://localhost:8888/API/V1/Category/" + name);
+        //    request.open("POST", "");
+        str     = '{"active":"' + active + 
+                  '","name":"' + name + '"}';
+    }
+    request.onload = loadResponseMessage;
     request.send(str);
 
     function loadResponseMessage(event) {
-        var responseData    = JSON.parse(event.target.responseText);
-        messagePa.innerText = responseData.massage;
+        if (event.target.status == 200) {
+            var responseData    = JSON.parse(event.target.responseText);
+            messagePa.innerText = responseData.massage;
+        } else if (event.target.status == 401) {
+            messagePa.innerText = "Die Authentifikation hat fehlgeschlagen! erneut anmelden"
+        } else if (event.target.status == 500) {
+            messagePa.innerText = "blablablablabla";
+        } else {
+            messagePa.innerText = "Beim laden der Produke ist Fehler auf geträten!";
+        }
     }
 }
 
 // eine bestehende produkt bearbeiten oder aktualisieren
 function editItems(id, sku, active, cat, name, img, desc, price, stock) {
     var request = new XMLHttpRequest();
-    request.open("PUT", "http://localhost:8888/API/V1/Product/" + id);
-//    request.open("", "");
-    request.onload = loadResponseMessage;
-    var str     = '{"sku":"' + sku + 
+    var str     = "";
+
+    if (pageC > 0) {
+        request.open("PUT", "http://localhost:8888/API/V1/Product/" + id);
+        //    request.open("PUT", "");
+        str     = '{"sku":"' + sku + 
                   '","active":"' + active + 
                   '","category":"' + cat + 
                   '","name":"' + name + 
@@ -207,28 +131,55 @@ function editItems(id, sku, active, cat, name, img, desc, price, stock) {
                   '","description":"' + desc + 
                   '","price":"' + price + 
                   '","stock":"' + stock + '"}';
+    } else {
+        request.open("PUT", "http://localhost:8888/API/V1/Category/" + id);
+        //    request.open("PUT", "");
+        str     = '{"active":"' + active + 
+                  '","name":"' + name + '"}';
+    }
+    request.onload = loadResponseMessage;
     request.send(str);
 
     function loadResponseMessage(event) {
-        var responseData    = JSON.parse(event.target.responseText);
-        //console.log(responseData);                                                                                            // prüfen ob der response vollständig kommt
-        messagePa.innerText = responseData.massage;
+        if (event.target.status == 200) {
+            var responseData    = JSON.parse(event.target.responseText);
+            messagePa.innerText = responseData.massage;
+        } else if (event.target.status == 401) {
+            messagePa.innerText = "Die Authentifikation hat fehlgeschlagen! erneut anmelden"
+        } else if (event.target.status == 500) {
+            messagePa.innerText = "blablablablabla";
+        } else {
+            messagePa.innerText = "Beim laden der Produke ist Fehler auf geträten!";
+        }
     }
 }
 
 // eine bestehende produkt löschen, produkt id muss mitgegeben werden
 function deleteItems(id) {
     var request = new XMLHttpRequest();
-    request.open("DELETE", "http://localhost:8888/API/V1/Product/" + id);
-//    request.open("", "");
+
+    if (pageC > 0) {
+        request.open("DELETE", "http://localhost:8888/API/V1/Product/" + id);
+//      request.open("", "");
+    } else {
+        request.open("DELETE", "http://localhost:8888/API/V1/Category/" + id);
+//      request.open("", "");
+    }
     request.onload = loadResponseMessage;
     request.send();
 
     function loadResponseMessage(event) {
-        var responseData    = JSON.parse(event.target.responseText);
-        messagePa.innerText = responseData.massage;
+        if (event.target.status == 200) {
+            var responseData    = JSON.parse(event.target.responseText);
+            messagePa.innerText = responseData.massage;
+        } else if (event.target.status == 401) {
+            messagePa.innerText = "Die Authentifikation hat fehlgeschlagen! erneut anmelden"
+        } else if (event.target.status == 500) {
+            messagePa.innerText = "blablablablabla";
+        } else {
+            messagePa.innerText = "Beim laden der Produke ist Fehler auf geträten!";
+        }
     }
-    
 }
 
 function addContent(status) {                                                                                                   // funktion erstellt eine formular, wo man neue daten eingeben kann um neue produkte hinzuzufügen oder auch die bestehen zu ändern
@@ -371,9 +322,13 @@ function addContent(status) {                                                   
                                                                ,img 
                                                                ,desc 
                                                                ,price 
-                                                               ,stock 
-                                                               ) 
-                                                    ,loadTableProduct() 
+                                                               ,stock
+                                                              );
+                                                     if (pageC > 0) {
+                                                        loadTableProduct();
+                                                     } else {
+                                                        loadTableCategory();
+                                                     }
                                                     });
         } else {
             var addBtnText = document.createTextNode("Hinzufügen");
@@ -385,8 +340,12 @@ function addContent(status) {                                                   
                                                               ,desc
                                                               ,price
                                                               ,stock
-                                                              )
-                                                    ,loadTableProduct() 
+                                                              );
+                                                     if (pageC > 0) {
+                                                        loadTableProduct();
+                                                     } else {
+                                                        loadTableCategory();
+                                                     }
                                                     });
         }
         addBtn.appendChild(addBtnText);
@@ -396,11 +355,7 @@ function addContent(status) {                                                   
         
         // formular ausgeben
     if (content != temp) {                                                                                                      // überprüfen ob der formular schon aus gegeben ist wenn nicht soll ausgegenen werden
-        if (pageC == 0) {
-            content.appendChild(item2);
-            content.appendChild(item4);
-            content.appendChild(item9);                                                                                                  // nach dem der formular ausgegeben wurde wird die ausgabe in den temp gespeichert, so kann es beim nächsten aufruf überprüft werden ob der formular schon ausgegeben worden ist
-        } else {
+        if (pageC > 0) {
             content.appendChild(item1);
             content.appendChild(item2);
             content.appendChild(item3);
@@ -409,17 +364,17 @@ function addContent(status) {                                                   
             content.appendChild(item6);
             content.appendChild(item7);
             content.appendChild(item8);
-            content.appendChild(item9);
+            content.appendChild(item9);            
+        } else {
+            content.appendChild(item2);
+            content.appendChild(item4);
+            content.appendChild(item9);                                                                                         // nach dem der formular ausgegeben wurde wird die ausgabe in den temp gespeichert, so kann es beim nächsten aufruf überprüft werden ob der formular schon ausgegeben worden ist
         }
         temp = content;   
     } else {
-        temp = "";                                                                                                          // variable leeren
+        temp = "";                                                                                                              // variable leeren
         content.innerHTML = "";
-        if (pageC == 0) {                                                                                                        // überprüfen ob die kategorien oder produkte geleden sind
-            content.appendChild(item2);
-            content.appendChild(item4);
-            content.appendChild(item9);
-        } else {
+        if (pageC > 0) {                                                                                                        // überprüfen ob die kategorien oder produkte geleden sind
             content.appendChild(item1);
             content.appendChild(item2);
             content.appendChild(item3);
@@ -428,6 +383,10 @@ function addContent(status) {                                                   
             content.appendChild(item6);
             content.appendChild(item7);
             content.appendChild(item8);
+            content.appendChild(item9);
+        } else {
+            content.appendChild(item2);
+            content.appendChild(item4);
             content.appendChild(item9);
         }
     }
@@ -436,10 +395,16 @@ function addContent(status) {                                                   
 }
 
 
-function loadTableCategory() {
-    var request = new XMLHttpRequest();                             
-    request.open("GET", "http://localhost:8888/API/V1/Categorys");
-    //request.open("GET", "https://campus.csbe.ch/sollberger-manuel/uek307/Categories");
+function loadTableCategory(id) {
+    var request = new XMLHttpRequest();
+    
+    if (id) {
+        request.open("GET", "http://localhost:8888/API/V1/Category/" + id);
+        //request.open("GET", "https://campus.csbe.ch/sollberger-manuel/uek307/Categories");
+    } else {
+        request.open("GET", "http://localhost:8888/API/V1/Categorys");
+        //request.open("GET", "https://campus.csbe.ch/sollberger-manuel/uek307/Categories");
+    }
     request.onload = loadedFact;
     request.send();
 
@@ -466,7 +431,7 @@ function loadTableCategory() {
     tabName.appendChild(thName);
     tabValF.appendChild(thValFr);
     tabValT.appendChild(thValTo);
-    tableHeaderBtnFild.appendChild(addNewItem())
+    tableHeaderBtnFild.appendChild(addNewItem());
 
     //var thDiscribe = document.createTextNode("Bezeichnung");  // tabellenheader für profudtive system
     //var thAktive = document.createTextNode("Aktiv");
@@ -490,270 +455,245 @@ function loadTableCategory() {
     // tabelle befüllen
     function loadedFact(event) {
         var responseData = JSON.parse(event.target.responseText);                                                               // die daten aus dem json in die variable ziehen
+
+        if (event.target.status == 200) {                                                                                       // überprüfen ob die verbindung in ordnung ist und ein antwort vorhanden ist
+            for (var i = 0; i < responseData.length; i++) {
+                var response = responseData[i];
+                let pid = responseData[i].category_id;
+
+                // bearbeiten button in der zeile
+                const editBtn = document.createElement("button");                                                               // pro zeile der tabelle soll dem produkt entsprechende button zum bearbeiten der produkt erzeugt und ausgegeben
+                var editBtnText = document.createTextNode("Bearbeiten");
+                editBtn.appendChild(editBtnText);
+                editBtn.setAttribute("class", "edit-btn");
+                editBtn.setAttribute("type", "button");
+                editBtn.addEventListener('click', () => { inData.appendChild(addContent(pid));                                  // beim klicken der butten soll ein formular ausgegeben werden. formular benötigt in dem fall ein product_id zu identifikation der zeile bzw. produkt
+                                                        });
+
+                // löschen butten in der zeile
+                const delBtn = document.createElement("button");                                                                // pro zeile der tabelle soll auch ein dem produkt betreffend butten erzeugt werden, um den produkt löschen zu ermöglichen
+                var delBtnText = document.createTextNode("Löschen");
+                delBtn.appendChild(delBtnText);
+                delBtn.setAttribute("class", "del-btn");
+                delBtn.setAttribute("type", "button");
+                delBtn.addEventListener('click', () => { deleteItems(pid);
+                                                         if (pageC > 0) {
+                                                             loadTableProduct();
+                                                         } else {
+                                                             loadTableCategory();
+                                                         }                                                                      // beim klichen der button soll der der entsprechende produkt gelöscht und der tabelle neugeladen werden. der stimmte produkt soll anhand der product_id festgestellt werden.
+                                                        });                                  
+
+                // zeile und zellen erzeugen
+                var row         = document.createElement("tr");
+                var idColumn    = document.createElement("td");
+                var statColumn  = document.createElement("td");
+                var nameColumn  = document.createElement("td");
+                var valFrColumn = document.createElement("td");
+                var valToColumn = document.createElement("td");
+                var editItem    = document.createElement("td");
+                var delItem     = document.createElement("td");
+
+                // zeile in die tabelle einfügen
+                table.appendChild(row);
+
+                row.appendChild(idColumn);
+                idColumn.innerText = response.category_id;
+
+                row.appendChild(statColumn);
+                statColumn.innerText = response.active;
                 
-        for (var i = 0; i < responseData.length; i++) {
-            var response = responseData[i];
-            let pid = responseData[i].category_id;
+                row.appendChild(nameColumn); 
+                nameColumn.innerText = response.name;
 
-            // bearbeiten button in der zeile
-            const editBtn = document.createElement("button");                                                                   // pro zeile der tabelle soll dem produkt entsprechende button zum bearbeiten der produkt erzeugt und ausgegeben
-            var editBtnText = document.createTextNode("Bearbeiten");
-            editBtn.appendChild(editBtnText);
-            editBtn.setAttribute("class", "edit-btn");
-            editBtn.setAttribute("type", "button");
-            editBtn.addEventListener('click', () => { inData.appendChild(addContent(pid))                                       // beim klicken der butten soll ein formular ausgegeben werden. formular benötigt in dem fall ein product_id zu identifikation der zeile bzw. produkt
-                                                    });
+                row.appendChild(valFrColumn); 
+                valFrColumn.innerText = response.valid_from;
+                
+                row.appendChild(valToColumn); 
+                valToColumn.innerText = response.valid_to;
 
-            // löschen butten in der zeile
-            const delBtn = document.createElement("button");                                                                    // pro zeile der tabelle soll auch ein dem produkt betreffend butten erzeugt werden, um den produkt löschen zu ermöglichen
-            var delBtnText = document.createTextNode("Löschen");
-            delBtn.appendChild(delBtnText);
-            delBtn.setAttribute("class", "del-btn");
-            delBtn.setAttribute("type", "button");
-            delBtn.addEventListener('click', () => { deleteItems(pid)
-                                                    ,loadTableProduct()                                                         // beim klichen der button soll der der entsprechende produkt gelöscht und der tabelle neugeladen werden. der stimmte produkt soll anhand der product_id festgestellt werden.
-                                                   });                                  
+                row.appendChild(editItem);
+                editItem.appendChild(editBtn);
 
-            // zeile und zellen erzeugen
-            var row         = document.createElement("tr");
-            var idColumn    = document.createElement("td");
-            var statColumn  = document.createElement("td");
-            var nameColumn  = document.createElement("td");
-            var valFrColumn = document.createElement("td");
-            var valToColumn = document.createElement("td");
-            var editItem    = document.createElement("td");
-            var delItem     = document.createElement("td");
-
-            // zeile in die tabelle einfügen
-            table.appendChild(row);
-
-            row.appendChild(idColumn);
-            idColumn.innerText = response.category_id;
-
-            row.appendChild(statColumn);
-            statColumn.innerText = response.active;
-            
-            row.appendChild(nameColumn); 
-            nameColumn.innerText = response.name;
-
-            row.appendChild(valFrColumn); 
-            valFrColumn.innerText = response.valid_from;
-            
-            row.appendChild(valToColumn); 
-            valToColumn.innerText = response.valid_to;
-
-            row.appendChild(editItem);
-            editItem.appendChild(editBtn);
-
-            row.appendChild(delItem);
-            delItem.appendChild(delBtn);
+                row.appendChild(delItem);
+                delItem.appendChild(delBtn);
+            }
+        } else if (event.target.status == 401) {
+            messagePa.innerText = "Die Authentifikation hat fehlgeschlagen! erneut anmelden"
+        } else if (event.target.status == 500) {
+            messagePa.innerText = "blablablablabla";
+        } else {
+            messagePa.innerText = "Beim laden der Produke ist Fehler auf geträten!";
         }
     }
     pageC = 0;
 }
 
 // tabelle befüllen
-function loadTableProduct() {                                                                                                  // abfrage ab die endpoint über get schicken um alle produkte auflisten zu können
+function loadTableProduct(id) {                                                                                                  // abfrage ab die endpoint über get schicken um alle produkte auflisten zu können
     var request = new XMLHttpRequest();                             
-    request.open("GET", "http://localhost:8888/API/V1/Products");
-    //request.open("GET", "https://campus.csbe.ch/sollberger-manuel/uek307/Categories");
+    
+    if (id) {
+        request.open("GET", "http://localhost:8888/API/V1/Product/" + id);
+        //request.open("GET", "https://campus.csbe.ch/sollberger-manuel/uek307/Categories");    
+    } else {
+        request.open("GET", "http://localhost:8888/API/V1/Products");
+        //request.open("GET", "https://campus.csbe.ch/sollberger-manuel/uek307/Categories");
+    }
     request.onload = loadedFact;
     request.send();
-
+    
     table.innerHTML     = "";                                                                                                       // tabelleninhalt vor dem befüllen der tabelle leeren, um die anzeige neuzuladen. anderenfals würde die tabelle nur erweitert anstelle neuzuladen.
     content.innerHTML   = "";
 
-    // Layout definieren
-    //const contentContainer = document.createElement("div");
-    //const content = document.createElement("div");
-    //contentContainer.setAttribute("class", "content-container");
-
-    // navigation 
-    //const toolBar = document.createElement("div");
-
-    // tabelle definieren
-    //const table = document.createElement("table");
-    const rowHeader = document.createElement("tr");
-    //table.setAttribute("class", "table-cat-content");
-
-    // titel der tabelle
-    //const tableHeaderDiscribe = document.createElement("th");
-    //const tableHeaderAktive = document.createElement("th");
-    //const tableHeaderSum = document.createElement("th");
-    const tableHeaderBtnFild = document.createElement("th");                                                                    // am tabellen anfage einen feld definieren, welche einen button enthalten soll
-
-    // test API
-    const tabId     = document.createElement("th");
-    const tabSku    = document.createElement("th");
-    const tabAkt    = document.createElement("th");
-    const tabCat    = document.createElement("th");
-    const tabName   = document.createElement("th");
-    const tabImg    = document.createElement("th");
-    const tabDesc   = document.createElement("th");
-    const tabPrice  = document.createElement("th");
-    const tabSto    = document.createElement("th");
-    const tabValF   = document.createElement("th");
-    const tabValT   = document.createElement("th");
-
-    var thColId     = document.createTextNode("Produkt-Nr.");
-    var thSku       = document.createTextNode("Sku");
-    var thAktive    = document.createTextNode("Status");
-    var thCatId     = document.createTextNode("Kategorie-Nr.");
-    var thName      = document.createTextNode("Bezeichnung");
-    var thImg       = document.createTextNode("Bilder");
-    var thDesc      = document.createTextNode("Beschreibung");
-    var thPrice     = document.createTextNode("Preis");
-    var thStock     = document.createTextNode("Menge");
-    var thValFr     = document.createTextNode("Erfasst am:");
-    var thValTo     = document.createTextNode("letzte Änderung");
-
-    tabId.appendChild(thColId);
-    tabSku.appendChild(thSku);
-    tabAkt.appendChild(thAktive);
-    tabCat.appendChild(thCatId);
-    tabName.appendChild(thName);
-    tabImg.appendChild(thImg);
-    tabDesc.appendChild(thDesc);
-    tabPrice.appendChild(thPrice);
-    tabSto.appendChild(thStock);
-    tabValF.appendChild(thValFr);
-    tabValT.appendChild(thValTo);
-    tableHeaderBtnFild.appendChild(addNewItem())
-
-    //var thDiscribe = document.createTextNode("Bezeichnung");  // tabellenheader für profudtive system
-    //var thAktive = document.createTextNode("Aktiv");
-    //var thSum = document.createTextNode("Summe");
-    //tableHeaderDiscribe.appendChild(thDiscribe);
-    //tableHeaderAktive.appendChild(thAktive);
-    //tableHeaderSum.appendChild(thSum);
-
-    //contentContainer.appendChild(content);
-    //contentContainer.appendChild(toolBar);
-    //content.appendChild(table);
-
-    table.appendChild(rowHeader);                   // test von
-    rowHeader.appendChild(tabId);   
-    rowHeader.appendChild(tabSku);
-    rowHeader.appendChild(tabAkt);
-    rowHeader.appendChild(tabCat);
-    rowHeader.appendChild(tabName);
-    rowHeader.appendChild(tabImg);
-    rowHeader.appendChild(tabDesc);
-    rowHeader.appendChild(tabPrice);
-    rowHeader.appendChild(tabSto);  
-    rowHeader.appendChild(tabValF);
-    rowHeader.appendChild(tabValT);                 // test bis
-    //rowHeader.appendChild(tableHeaderDiscribe);
-    //rowHeader.appendChild(tableHeaderAktive);
-    //rowHeader.appendChild(tableHeaderSum);
-    rowHeader.appendChild(tableHeaderBtnFild);
-
     // tabelle befüllen
     function loadedFact(event) {
-        var responseData = JSON.parse(event.target.responseText);                                                               // die daten aus dem json in die variable ziehen
-                
-        for (var i = 0; i < responseData.length; i++) {
-            var response = responseData[i];
-            let pid = responseData[i].product_id;
-
-            // bearbeiten button in der zeile
-            const editBtn = document.createElement("button");                                                                   // pro zeile der tabelle soll dem produkt entsprechende button zum bearbeiten der produkt erzeugt und ausgegeben
-            var editBtnText = document.createTextNode("Bearbeiten");
-            editBtn.appendChild(editBtnText);
-            editBtn.setAttribute("class", "edit-btn");
-            editBtn.setAttribute("type", "button");
-            editBtn.addEventListener('click', () => { inData.appendChild(addContent(pid)) });                                   // beim klicken der butten soll ein formular ausgegeben werden. formular benötigt in dem fall ein product_id zu identifikation der zeile bzw. produkt
-
-            // löschen butten in der zeile
-            const delBtn = document.createElement("button");                                                                    // pro zeile der tabelle soll auch ein dem produkt betreffend butten erzeugt werden, um den produkt löschen zu ermöglichen
-            var delBtnText = document.createTextNode("Löschen");
-            delBtn.appendChild(delBtnText);
-            delBtn.setAttribute("class", "del-btn");
-            delBtn.setAttribute("type", "button");
-            delBtn.addEventListener('click', () => { deleteItems(pid), loadTableProduct() });                                  // beim klichen der button soll der der entsprechende produkt gelöscht und der tabelle neugeladen werden. der stimmte produkt soll anhand der product_id festgestellt werden.
-
-            // zeile und zellen erzeugen
-            var row         = document.createElement("tr");
-            var idColumn    = document.createElement("td");
-            var statColumn  = document.createElement("td");
-            var skuColumn   = document.createElement("td");
-            var editItem    = document.createElement("td");
-            var delItem     = document.createElement("td");  
-            
-            // test API
-            var idCat       = document.createElement("td");
-            var nameColumn  = document.createElement("td");
-            var imageColumn = document.createElement("td");
-            var descColumn  = document.createElement("td");
-            var priceColumn = document.createElement("td");
-            var stockColumn = document.createElement("td");
-            var valFrColumn = document.createElement("td");
-            var valToColumn = document.createElement("td");
-
-            // zeile in die tabelle einfügen
-            table.appendChild(row);
-                
-
-            // tabellen header für den campus API
-            //table.appendChild(idColumn);
-            //idColumn.innerText = responseData.category_id;
-    
-            //table.appendChild(statColumn);
-            //statColumn.innerText = responseData.active;
-
-            //table.appendChild(nameColumn);
-            //nameColumn.innerText = responseData.name;
-
-            //var row = document.createElement("tr");
-            //var idColumn = document.createElement("td");
-            //var statColumn = document.createElement("td");
-            //var nameColumn = document.createElement("td");
-            //var editItem = document.createElement("td");
-            //var delItem = document.createElement("td");      
-
-
-
-            row.appendChild(idColumn);
-            idColumn.innerText = response.product_id;
+        const rowHeader = document.createElement("tr");
+        const tableHeaderBtnFild = document.createElement("th");                                                                // am tabellen anfage einen feld definieren, welche einen button enthalten soll
         
-            row.appendChild(skuColumn);
-            skuColumn.innerText = response.sku;
+        const tabId     = document.createElement("th");                                                                         // spalten erzeugen
+        const tabSku    = document.createElement("th");
+        const tabAkt    = document.createElement("th");
+        const tabCat    = document.createElement("th");
+        const tabName   = document.createElement("th");
+        const tabImg    = document.createElement("th");
+        const tabDesc   = document.createElement("th");
+        const tabPrice  = document.createElement("th");
+        const tabSto    = document.createElement("th");
+        const tabValF   = document.createElement("th");
+        const tabValT   = document.createElement("th");
 
-            row.appendChild(statColumn);
-            statColumn.innerText = response.active;
+        var thColId     = document.createTextNode("Produkt-Nr.");                                                               // spalten titel definieren
+        var thSku       = document.createTextNode("Sku");
+        var thAktive    = document.createTextNode("Status");
+        var thCatId     = document.createTextNode("Kategorie-Nr.");
+        var thName      = document.createTextNode("Bezeichnung");
+        var thImg       = document.createTextNode("Bilder");
+        var thDesc      = document.createTextNode("Beschreibung");
+        var thPrice     = document.createTextNode("Preis");
+        var thStock     = document.createTextNode("Menge");
+        var thValFr     = document.createTextNode("Erfasst am:");
+        var thValTo     = document.createTextNode("letzte Änderung");
 
-            row.appendChild(idCat);
-            idCat.innerText = response.id_category;
-            
-            row.appendChild(nameColumn); 
-            nameColumn.innerText = response.name;
+        tabId.appendChild(thColId);                                                                                             // spalten titel in die jeweilige spalte zuweisen
+        tabSku.appendChild(thSku);
+        tabAkt.appendChild(thAktive);
+        tabCat.appendChild(thCatId);
+        tabName.appendChild(thName);
+        tabImg.appendChild(thImg);
+        tabDesc.appendChild(thDesc);
+        tabPrice.appendChild(thPrice);
+        tabSto.appendChild(thStock);
+        tabValF.appendChild(thValFr);
+        tabValT.appendChild(thValTo);
+        tableHeaderBtnFild.appendChild(addNewItem())                                                                            // das butten um neue item hinzuzufügen in die spalte platzueren
 
-            row.appendChild(imageColumn);
-            imageColumn.innerText = response.image;
-            
-            row.appendChild(descColumn); 
-            descColumn.innerText = response.description;
-            
-            row.appendChild(priceColumn); 
-            priceColumn.innerText = response.price;
-            
-            row.appendChild(stockColumn); 
-            stockColumn.innerText = response.stock;
-            
-            row.appendChild(valFrColumn); 
-            valFrColumn.innerText = response.valid_from;
-            
-            row.appendChild(valToColumn); 
-            valToColumn.innerText = response.valid_to;
+        table.appendChild(rowHeader);                                                                                           // spaltentitel in die tabelle hinzufügen
+        rowHeader.appendChild(tabId);                                                                                           // spaltentitel in der tabelle platzieren
+        rowHeader.appendChild(tabSku);
+        rowHeader.appendChild(tabAkt);
+        rowHeader.appendChild(tabCat);
+        rowHeader.appendChild(tabName);
+        rowHeader.appendChild(tabImg);
+        rowHeader.appendChild(tabDesc);
+        rowHeader.appendChild(tabPrice);
+        rowHeader.appendChild(tabSto);  
+        rowHeader.appendChild(tabValF);
+        rowHeader.appendChild(tabValT);
+        rowHeader.appendChild(tableHeaderBtnFild);    
 
-            row.appendChild(editItem);
-            editItem.appendChild(editBtn);
+        if (event.target.status === 200) {                                                                                      // überprüfen ob die anfrage und die authentifikation erfolgreich war
+            var responseData = JSON.parse(event.target.responseText);                                                           // die daten aus dem json in die variable ziehen            
 
-            row.appendChild(delItem);
-            delItem.appendChild(delBtn);
+            for (var i = 0; i < responseData.length; i++) {
+                var response = responseData[i];
+                let pid = responseData[i].product_id;
+
+                // bearbeiten button in der zeile
+                const editBtn = document.createElement("button");                                                               // pro zeile der tabelle soll dem produkt entsprechende button zum bearbeiten der produkt erzeugt und ausgegeben
+                var editBtnText = document.createTextNode("Bearbeiten");
+                editBtn.appendChild(editBtnText);
+                editBtn.setAttribute("class", "edit-btn");
+                editBtn.setAttribute("type", "button");
+                editBtn.addEventListener('click', () => { inData.appendChild(addContent(pid)) });                               // beim klicken der butten soll ein formular ausgegeben werden. formular benötigt in dem fall ein product_id zu identifikation der zeile bzw. produkt
+
+                // löschen butten in der zeile
+                const delBtn = document.createElement("button");                                                                // pro zeile der tabelle soll auch ein dem produkt betreffend butten erzeugt werden, um den produkt löschen zu ermöglichen
+                var delBtnText = document.createTextNode("Löschen");
+                delBtn.appendChild(delBtnText);
+                delBtn.setAttribute("class", "del-btn");
+                delBtn.setAttribute("type", "button");
+                delBtn.addEventListener('click', () => { deleteItems(pid), loadTableProduct() });                               // beim klichen der button soll der der entsprechende produkt gelöscht und der tabelle neugeladen werden. der stimmte produkt soll anhand der product_id festgestellt werden.
+
+                // zeile und zellen erzeugen
+                var row         = document.createElement("tr");
+                var idColumn    = document.createElement("td");
+                var statColumn  = document.createElement("td");
+                var skuColumn   = document.createElement("td");
+                var editItem    = document.createElement("td");
+                var delItem     = document.createElement("td");
+                var idCat       = document.createElement("td");
+                var nameColumn  = document.createElement("td");
+                var imageColumn = document.createElement("td");
+                var descColumn  = document.createElement("td");
+                var priceColumn = document.createElement("td");
+                var stockColumn = document.createElement("td");
+                var valFrColumn = document.createElement("td");
+                var valToColumn = document.createElement("td");
+
+                // zeile in die tabelle einfügen
+                table.appendChild(row);
+
+                row.appendChild(idColumn);                                                                                      // jeweilige spaltenwerte pro zeile platzieren
+                idColumn.innerText = response.product_id;                                                                       // spaltenwerte in einer zeile ausgeben
+            
+                row.appendChild(skuColumn);
+                skuColumn.innerText = response.sku;
+
+                row.appendChild(statColumn);
+                statColumn.innerText = response.active;
+
+                row.appendChild(idCat);
+                idCat.innerText = response.id_category;
+                
+                row.appendChild(nameColumn); 
+                nameColumn.innerText = response.name;
+
+                row.appendChild(imageColumn);
+                imageColumn.innerText = response.image;
+                
+                row.appendChild(descColumn); 
+                descColumn.innerText = response.description;
+                
+                row.appendChild(priceColumn); 
+                priceColumn.innerText = response.price;
+                
+                row.appendChild(stockColumn); 
+                stockColumn.innerText = response.stock;
+                
+                row.appendChild(valFrColumn); 
+                valFrColumn.innerText = response.valid_from;
+                
+                row.appendChild(valToColumn); 
+                valToColumn.innerText = response.valid_to;
+
+                row.appendChild(editItem);
+                editItem.appendChild(editBtn);                                                                                  // pro zeile zu den jeweiligen datensätze butten zu editieren platzieren
+
+                row.appendChild(delItem);
+                delItem.appendChild(delBtn);                                                                                    // pro zeile zu den jeweiligen datensätze butten zu löschen platzieren
+            }
+        } else if (event.target.status == 401) {
+            messagePa.innerText = "Die Authentifikation hat fehlgeschlagen! erneut anmelden";
+            location.href = "../view/login.php";
+        } else if (event.target.status == 500) {
+            messagePa.innerText = "blablablablabla";
+        } else {
+            messagePa.innerText = "Beim laden der Produke ist Fehler auf geträten!";
         }
     }
     pageC = 1;
+    
 }
 
 loadTableProduct();

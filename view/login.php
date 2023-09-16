@@ -9,17 +9,17 @@
 <body>
     <div class="body-for-login-p" id="body-for-login-p">
         <div class="forms-container">
-            <form action="" id="login-form" onsubmit="authenticate()">
-                <div class="items">
-                 <label for="user-login">Benutzer: </label>
-                 <input type="text" name="user-login" id="user-login">
+            <form id="login-form">
+                <div class="items" id="items">
+                 <input type="email" name="user-login" id="user-login" max="400" placeholder="Login">
                 </div>
-                <div class="items">
-                 <label for="password-fild">Password: </label>
-                 <input type="password" name="password-fild" id="password-fild">
+                <div id="messagel"></div>
+                <div class="items" id="items">
+                 <input type="password" name="password-fild" id="password-fild" min="7" max="600" placeholder="Password">
                 </div>
-                <div class="items">
-                 <button type="button" onclick="authenticate()">Einlogen</button>
+                <div id="messagep"></div>
+                <div class="items button" id="items">
+                 <button id="submit" type="button">Einlogen</button>
                 </div>
              </form>
         </div>    
