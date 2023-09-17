@@ -22,7 +22,8 @@
                  <button id="submit" type="button">Einlogen</button>
                 </div>
              </form>
-        </div>    
+        </div>
+        <div id="errors"></div>    
     </div>
 
     <script src="../controller/authentication.js"></script>

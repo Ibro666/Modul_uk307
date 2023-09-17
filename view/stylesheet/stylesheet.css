@@ -117,7 +117,6 @@ input:hover, input:focus {
 
 .nav-content input {
     border-radius: 4em 1em / 1em 4em;
-    background: none;
     outline: none;
     margin: 1%;
     padding: 1%;
@@ -140,15 +139,12 @@ input:hover, input:focus {
 .nav-content button:active {
     background: linear-gradient(315deg, #6ac97f, #f0f0f0);
     box-shadow: 0px 0px 0px #b0b0b0dc, 
-                0px 0px 0px #ffffff
+                0px 0px 0px #ffffff;
 }
 
 
 /* tabelle stylen */
 .content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     padding: 1%;
     border-radius: 19px;
     background: linear-gradient(315deg, #cacaca, #f0f0f0);
@@ -156,39 +152,96 @@ input:hover, input:focus {
                     22px 22px 44px #ffffff;
 }
 
-.product-table th {
+.row-header {
+    border-radius: 4em 1em / 1em 4em;
+    border-right: #ffffff;
     background-color: rgba(53, 173, 221, 0.911);
+    display: grid;
+    width: 100%;
 }
 
-.add-btn {
-    margin: 1%;
+.row-container {
+    display: grid;
+    grid-template-columns: 3% 10% 4% 8.1% 15% 7% 15% 4% 4.5% 9% 10% 10%;
+    padding: 1%;
+}
+
+.add-btn-container {
+    width: 120%;
+    background-color: rgba(53, 173, 221, 0.911);
     border-radius: 4em 1em / 1em 4em;
-    padding: 6%;
-    background: rgb(20, 172, 134);
-    box-shadow: -5px -5px 20px #b0b0b0dc, 
-                10px 10px 25px #ffffff
+    margin-left: -7%;
+}
+
+.items-row {
+    display: grid;
+    grid-template-columns: 3% 10% 4% 8.1% 15% 7% 13% 4% 4.5% 9% 10% 10%;
+    float: left;
+    width: 100%;
+    padding: 1%;
 }
 
 .product-table td {
-
+    text-align: center;
 }
 
-.edit-btn {
+
+/* buttons */
+.add-btn {
+    margin: 0;
+    padding: 4%;
+    width: 80%;
+    border-radius: 4em 1em / 1em 4em;
+    background: rgb(20, 172, 134);
+    box-shadow: -5px -5px 20px #b0b0b0dc, 
+                10px 10px 25px #ffffff;
+}
+
+.add-btn:active {
+    background: linear-gradient(315deg, rgb(20, 172, 134), #f0f0f0);
+    box-shadow: 0px 0px 0px #b0b0b0dc, 
+                0px 0px 0px #ffffff;
+}
+
+.row-btns {
+    display: flex;
+    
+}
+
+.row-btn-edit button {
     margin: 1%;
     border-radius: 4em 1em / 1em 4em;
     padding: 6%;
     background: rgb(189, 177, 12);
     box-shadow: -5px -5px 20px #b0b0b0dc, 
-                10px 10px 25px #ffffff
+                10px 10px 25px #ffffff;
+    width: 113%;
 }
 
-.del-btn {
+.row-btn-edit button:active {
+    background: linear-gradient(315deg, rgb(189, 177, 12), #f0f0f0);
+    box-shadow: 0px 0px 0px #b0b0b0dc, 
+                0px 0px 0px #ffffff;
+}
+
+.row-btn-del {
+    margin-left: 10%;
+}
+
+.row-btn-del button {
     margin: 1%;
     border-radius: 4em 1em / 1em 4em;
     padding: 6%;
     background: rgb(161, 7, 79);
     box-shadow: -5px -5px 20px #b0b0b0dc, 
-                10px 10px 25px #ffffff
+                10px 10px 25px #ffffff;
+    width: 136%;
+}
+
+.row-btn-del button:active {
+    background: linear-gradient(315deg, rgb(161, 7, 79), #f0f0f0);
+    box-shadow: 0px 0px 0px #b0b0b0dc, 
+                0px 0px 0px #ffffff;
 }
 
 /* formular container */
@@ -197,4 +250,18 @@ input:hover, input:focus {
     justify-content: center;
     align-items: center;
     margin: 2%;
+}
+
+.item-containner {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    padding: 1%;
+}
+
+.item-containner input {
+    border-radius: 4em 1em / 1em 4em;
+    font-size: 18px;
+    box-shadow: inset 2px 5px 10px #bebebe;
+    background: linear-gradient(315deg, #cacaca, #f0f0f0);
+    color: #000000;
 }

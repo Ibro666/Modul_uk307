@@ -36,6 +36,7 @@ pagChan.addEventListener("click", () => { if (pageC > 0) {
 // suchfeld
 const searchFild    = document.createElement("input");
 searchFild.setAttribute("type", "text");
+searchFild.setAttribute("placeholder", "id / sku");
 let valToSearch     = "";
 searchFild.onchange = () => { valToSearch = searchFild.value };
 const searchBtn     = document.createElement("button");
@@ -193,6 +194,7 @@ function addContent(status) {                                                   
         var item7       = document.createElement("div");
         var item8       = document.createElement("div");
         var item9       = document.createElement("div");
+        var erMessage   = document.createElement("div");
         item1.setAttribute("class", "item-containner");
         item2.setAttribute("class", "item-containner");
         item3.setAttribute("class", "item-containner");
@@ -202,16 +204,6 @@ function addContent(status) {                                                   
         item7.setAttribute("class", "item-containner");
         item8.setAttribute("class", "item-containner");
         item9.setAttribute("class", "item-containner");
-
-        //var item1     = document.getElementById("item1");
-        //var item2     = document.getElementById("item2");
-        //var item3     = document.getElementById("item3");
-        //var item4     = document.getElementById("item4");
-        //var item5     = document.getElementById("item5");
-        //var item6     = document.getElementById("item6");
-        //var item7     = document.getElementById('item7');
-        //var item8     = document.getElementById("item8");
-        //var itemBtn   = document.getElementById("item-btn");
 
         // temporäre variable definieren, um benutzereingabe abzufangen
         let sku         = "";
@@ -314,37 +306,74 @@ function addContent(status) {                                                   
         const addBtn = document.createElement("button");
         if (status > 0) {                                                                                                       // status 0 ist das aller erste datensatz, es kann nur eingefügt werden. falls der status höcher 0 ist handelt es sich um einen datensatz der schon existiert
             var addBtnText = document.createTextNode("Speichern");
-            addBtn.addEventListener('click', () => { editItems( status                                                          // die werte welche ein benutzer eingegeben hat als parmeter mitgeben.
-                                                               ,sku 
-                                                               ,active 
-                                                               ,cat 
-                                                               ,name 
-                                                               ,img 
-                                                               ,desc 
-                                                               ,price 
-                                                               ,stock
-                                                              );
-                                                     if (pageC > 0) {
-                                                        loadTableProduct();
-                                                     } else {
-                                                        loadTableCategory();
-                                                     }
+            addBtn.addEventListener('click', (e) => { if (sku === "" || sku == null ||
+                                                          active === "" || active == null ||
+                                                          cat === "" || cat == null ||
+                                                          name === "" || name == null ||
+                                                          img === "" || img == null ||
+                                                          desc === "" || desc == null ||
+                                                          price === "" || price == null ||
+                                                          stock === "" || stock == null) {
+                                                         erMessage.innerText = "Felder ausfüllen!";
+                                                         erMessage.classList.add("error-message");
+                                                         inFlSku.classList.add("error-input");
+                                                         inFlAct.classList.add("error-input");
+                                                         inFlCat.classList.add("error-input");
+                                                         inFlNam.classList.add("error-input");
+                                                         inFlImg.classList.add("error-input");
+                                                         inFlDesc.classList.add("error-input");
+                                                         inFlPri.classList.add("error-input");
+                                                         inFlSt.classList.add("error-input");
+                                                      } else {
+                                                         editItems( status                                                      // die werte welche ein benutzer eingegeben hat als parmeter mitgeben.
+                                                                   ,sku 
+                                                                   ,active 
+                                                                   ,cat 
+                                                                   ,name 
+                                                                   ,img 
+                                                                   ,desc 
+                                                                   ,price 
+                                                                   ,stock );
+                                                         if (pageC > 0) {
+                                                             loadTableProduct();
+                                                         } else {
+                                                             loadTableCategory();
+                                                         }
+                                                      }
                                                     });
         } else {
             var addBtnText = document.createTextNode("Hinzufügen");
-            addBtn.addEventListener('click', () => { addItems( sku                                                              // die werte welche ein benutzer eingegeben hat als parmeter mitgeben
-                                                              ,active 
-                                                              ,cat 
-                                                              ,name 
-                                                              ,img
-                                                              ,desc
-                                                              ,price
-                                                              ,stock
-                                                              );
-                                                     if (pageC > 0) {
-                                                        loadTableProduct();
-                                                     } else {
-                                                        loadTableCategory();
+            addBtn.addEventListener('click', () => { if (sku === "" || sku == null ||
+                                                         active === "" || active == null ||
+                                                         cat === "" || cat == null ||
+                                                         name === "" || name == null ||
+                                                         img === "" || img == null ||
+                                                         desc === "" || desc == null ||
+                                                         price === "" || price == null ||
+                                                         stock === "" || stock == null) {
+                                                        erMessage.innerText = "Felder ausfüllen!";
+                                                        erMessage.classList.add("error-message");
+                                                        inFlSku.classList.add("error-input");
+                                                        inFlAct.classList.add("error-input");
+                                                        inFlCat.classList.add("error-input");
+                                                        inFlNam.classList.add("error-input");
+                                                        inFlImg.classList.add("error-input");
+                                                        inFlDesc.classList.add("error-input");
+                                                        inFlPri.classList.add("error-input");
+                                                        inFlSt.classList.add("error-input");
+                                                     } else { addItems( sku                                                              // die werte welche ein benutzer eingegeben hat als parmeter mitgeben
+                                                                       ,active 
+                                                                       ,cat 
+                                                                       ,name 
+                                                                       ,img
+                                                                       ,desc
+                                                                       ,price
+                                                                       ,stock);
+                                                         if (pageC > 0) {
+                                                            loadTableProduct();
+                                                         } else {
+                                                            loadTableCategory();
+                                                         }
                                                      }
                                                     });
         }
@@ -352,7 +381,47 @@ function addContent(status) {                                                   
         addBtn.setAttribute("class", "add-btn");
         addBtn.setAttribute("type", "button");
         item9.appendChild(addBtn);
+
+        inFlSku.addEventListener("focus", () => {
+            inFlSku.classList.remove("error-input");                                                                            // beim aktivieren der inputfeld soll der roter rand entfernt werden
+            erMessage.innerText = "";                                                                                           // fehler meldung entfernen
+        });
+
+        inFlAct.addEventListener("focus", () => {
+            inFlAct.classList.remove("error-input");
+            erMessage.innerText = "";
+        });
+
+        inFlCat.addEventListener("focus", () => {
+            inFlCat.classList.remove("error-input");
+            erMessage.innerText = "";
+        });
         
+        inFlNam.addEventListener("focus", () => {
+            inFlNam.classList.remove("error-input");
+            erMessage.innerText = "";
+        });
+
+        inFlImg.addEventListener("focus", () => {
+            inFlImg.classList.remove("error-input");
+            erMessage.innerText = "";
+        });
+
+        inFlDesc.addEventListener("focus", () => {
+            inFlDesc.classList.remove("error-input");
+            erMessage.innerText = "";
+        });
+
+        inFlPri.addEventListener("focus", () => {
+            inFlPri.classList.remove("error-input");
+            erMessage.innerText = "";
+        });
+
+        inFlSt.addEventListener("focus", () => {
+            inFlSt.classList.remove("error-input");
+            erMessage.innerText = "";
+        });
+
         // formular ausgeben
     if (content != temp) {                                                                                                      // überprüfen ob der formular schon aus gegeben ist wenn nicht soll ausgegenen werden
         if (pageC > 0) {
@@ -390,10 +459,10 @@ function addContent(status) {                                                   
             content.appendChild(item9);
         }
     }
+    content.appendChild(erMessage);
 
     return content;
 }
-
 
 function loadTableCategory(id) {
     var request = new XMLHttpRequest();
@@ -444,12 +513,12 @@ function loadTableCategory(id) {
     //contentContainer.appendChild(toolBar);
     //content.appendChild(table);
 
-    table.appendChild(rowHeader);                   // test von
-    rowHeader.appendChild(tabId);   
+    table.appendChild(rowHeader);
+    rowHeader.appendChild(tabId);
     rowHeader.appendChild(tabAkt);
     rowHeader.appendChild(tabName);
     rowHeader.appendChild(tabValF);
-    rowHeader.appendChild(tabValT);                 // test bis
+    rowHeader.appendChild(tabValT);
     rowHeader.appendChild(tableHeaderBtnFild);
 
     // tabelle befüllen
@@ -530,7 +599,7 @@ function loadTableCategory(id) {
 }
 
 // tabelle befüllen
-function loadTableProduct(id) {                                                                                                  // abfrage ab die endpoint über get schicken um alle produkte auflisten zu können
+function loadTableProduct(id) {                                                                                                 // abfrage ab die endpoint über get schicken um alle produkte auflisten zu können
     var request = new XMLHttpRequest();                             
     
     if (id) {
@@ -543,37 +612,41 @@ function loadTableProduct(id) {                                                 
     request.onload = loadedFact;
     request.send();
     
-    table.innerHTML     = "";                                                                                                       // tabelleninhalt vor dem befüllen der tabelle leeren, um die anzeige neuzuladen. anderenfals würde die tabelle nur erweitert anstelle neuzuladen.
+    table.innerHTML     = "";                                                                                                   // tabelleninhalt vor dem befüllen der tabelle leeren, um die anzeige neuzuladen. anderenfals würde die tabelle nur erweitert anstelle neuzuladen.
     content.innerHTML   = "";
 
     // tabelle befüllen
     function loadedFact(event) {
-        const rowHeader = document.createElement("tr");
-        const tableHeaderBtnFild = document.createElement("th");                                                                // am tabellen anfage einen feld definieren, welche einen button enthalten soll
-        
-        const tabId     = document.createElement("th");                                                                         // spalten erzeugen
-        const tabSku    = document.createElement("th");
-        const tabAkt    = document.createElement("th");
-        const tabCat    = document.createElement("th");
-        const tabName   = document.createElement("th");
-        const tabImg    = document.createElement("th");
-        const tabDesc   = document.createElement("th");
-        const tabPrice  = document.createElement("th");
-        const tabSto    = document.createElement("th");
-        const tabValF   = document.createElement("th");
-        const tabValT   = document.createElement("th");
+        const rowHeader             = document.createElement("tr");
+        const rowContainer          = document.createElement("div");
+        const tabId                 = document.createElement("th");                                                             // spalten erzeugen
+        const tabSku                = document.createElement("th");
+        const tabAkt                = document.createElement("th");
+        const tabCat                = document.createElement("th");
+        const tabName               = document.createElement("th");
+        const tabImg                = document.createElement("th");
+        const tabDesc               = document.createElement("th");
+        const tabPrice              = document.createElement("th");
+        const tabSto                = document.createElement("th");
+        const tabValF               = document.createElement("th");
+        const tabValT               = document.createElement("th");
+        const tableHeaderBtnFild    = document.createElement("th");                                                             // am tabellen anfage einen feld definieren, welche einen button enthalten soll
+        const addBtnContainer       = document.createElement("div");
+        rowHeader.classList.add("row-header");
+        rowContainer.classList.add("row-container");
+        addBtnContainer.classList.add("add-btn-container");
 
-        var thColId     = document.createTextNode("Produkt-Nr.");                                                               // spalten titel definieren
-        var thSku       = document.createTextNode("Sku");
-        var thAktive    = document.createTextNode("Status");
-        var thCatId     = document.createTextNode("Kategorie-Nr.");
-        var thName      = document.createTextNode("Bezeichnung");
-        var thImg       = document.createTextNode("Bilder");
-        var thDesc      = document.createTextNode("Beschreibung");
-        var thPrice     = document.createTextNode("Preis");
-        var thStock     = document.createTextNode("Menge");
-        var thValFr     = document.createTextNode("Erfasst am:");
-        var thValTo     = document.createTextNode("letzte Änderung");
+        var thColId                 = document.createTextNode("ID");                                                   // spalten titel definieren
+        var thSku                   = document.createTextNode("Sku");
+        var thAktive                = document.createTextNode("Status");
+        var thCatId                 = document.createTextNode("Kategorie-Nr.");
+        var thName                  = document.createTextNode("Bezeichnung");
+        var thImg                   = document.createTextNode("Bilder");
+        var thDesc                  = document.createTextNode("Beschreibung");
+        var thPrice                 = document.createTextNode("Preis");
+        var thStock                 = document.createTextNode("Menge");
+        var thValFr                 = document.createTextNode("Erfasst am:");
+        var thValTo                 = document.createTextNode("letzte Änderung");
 
         tabId.appendChild(thColId);                                                                                             // spalten titel in die jeweilige spalte zuweisen
         tabSku.appendChild(thSku);
@@ -586,21 +659,23 @@ function loadTableProduct(id) {                                                 
         tabSto.appendChild(thStock);
         tabValF.appendChild(thValFr);
         tabValT.appendChild(thValTo);
-        tableHeaderBtnFild.appendChild(addNewItem())                                                                            // das butten um neue item hinzuzufügen in die spalte platzueren
+        tableHeaderBtnFild.appendChild(addBtnContainer);                                                                        // das butten um neue item hinzuzufügen in die spalte platzueren
+        addBtnContainer.appendChild(addNewItem());
 
         table.appendChild(rowHeader);                                                                                           // spaltentitel in die tabelle hinzufügen
-        rowHeader.appendChild(tabId);                                                                                           // spaltentitel in der tabelle platzieren
-        rowHeader.appendChild(tabSku);
-        rowHeader.appendChild(tabAkt);
-        rowHeader.appendChild(tabCat);
-        rowHeader.appendChild(tabName);
-        rowHeader.appendChild(tabImg);
-        rowHeader.appendChild(tabDesc);
-        rowHeader.appendChild(tabPrice);
-        rowHeader.appendChild(tabSto);  
-        rowHeader.appendChild(tabValF);
-        rowHeader.appendChild(tabValT);
-        rowHeader.appendChild(tableHeaderBtnFild);    
+        rowHeader.appendChild(rowContainer);
+        rowContainer.appendChild(tabId);                                                                                        // spaltentitel in der tabelle platzieren
+        rowContainer.appendChild(tabSku);
+        rowContainer.appendChild(tabAkt);
+        rowContainer.appendChild(tabCat);
+        rowContainer.appendChild(tabName);
+        rowContainer.appendChild(tabImg);
+        rowContainer.appendChild(tabDesc);
+        rowContainer.appendChild(tabPrice);
+        rowContainer.appendChild(tabSto);  
+        rowContainer.appendChild(tabValF);
+        rowContainer.appendChild(tabValT);
+        rowContainer.appendChild(tableHeaderBtnFild);    
 
         if (event.target.status === 200) {                                                                                      // überprüfen ob die anfrage und die authentifikation erfolgreich war
             var responseData = JSON.parse(event.target.responseText);                                                           // die daten aus dem json in die variable ziehen            
@@ -626,61 +701,71 @@ function loadTableProduct(id) {                                                 
                 delBtn.addEventListener('click', () => { deleteItems(pid), loadTableProduct() });                               // beim klichen der button soll der der entsprechende produkt gelöscht und der tabelle neugeladen werden. der stimmte produkt soll anhand der product_id festgestellt werden.
 
                 // zeile und zellen erzeugen
-                var row         = document.createElement("tr");
-                var idColumn    = document.createElement("td");
-                var statColumn  = document.createElement("td");
-                var skuColumn   = document.createElement("td");
-                var editItem    = document.createElement("td");
-                var delItem     = document.createElement("td");
-                var idCat       = document.createElement("td");
-                var nameColumn  = document.createElement("td");
-                var imageColumn = document.createElement("td");
-                var descColumn  = document.createElement("td");
-                var priceColumn = document.createElement("td");
-                var stockColumn = document.createElement("td");
-                var valFrColumn = document.createElement("td");
-                var valToColumn = document.createElement("td");
+                var row             = document.createElement("tr");
+                var idColumn        = document.createElement("td");
+                var statColumn      = document.createElement("td");
+                var skuColumn       = document.createElement("td");
+                var idCat           = document.createElement("td");
+                var nameColumn      = document.createElement("td");
+                var imageColumn     = document.createElement("td");
+                var descColumn      = document.createElement("td");
+                var priceColumn     = document.createElement("td");
+                var stockColumn     = document.createElement("td");
+                var valFrColumn     = document.createElement("td");
+                var valToColumn     = document.createElement("td");
+                var btnColumn       = document.createElement("td");
+                var editItem        = document.createElement("div");
+                var delItem         = document.createElement("div");
+                var btnContainer    = document.createElement("div");
+
+                row.classList.add("items-row");
+                editItem.classList.add("row-btn-edit");
+                delItem.classList.add("row-btn-del");
+                btnContainer.classList.add("row-btns");
 
                 // zeile in die tabelle einfügen
                 table.appendChild(row);
 
                 row.appendChild(idColumn);                                                                                      // jeweilige spaltenwerte pro zeile platzieren
-                idColumn.innerText = response.product_id;                                                                       // spaltenwerte in einer zeile ausgeben
+                idColumn.innerText      = response.product_id;                                                                  // spaltenwerte in einer zeile ausgeben
             
                 row.appendChild(skuColumn);
-                skuColumn.innerText = response.sku;
+                skuColumn.innerText     = response.sku;
 
                 row.appendChild(statColumn);
-                statColumn.innerText = response.active;
+                statColumn.innerText    = response.active;
 
                 row.appendChild(idCat);
-                idCat.innerText = response.id_category;
+                idCat.innerText         = response.id_category;
                 
                 row.appendChild(nameColumn); 
-                nameColumn.innerText = response.name;
+                nameColumn.innerText    = response.name;
 
                 row.appendChild(imageColumn);
-                imageColumn.innerText = response.image;
+                imageColumn.innerText   = response.image;
                 
                 row.appendChild(descColumn); 
-                descColumn.innerText = response.description;
+                descColumn.innerText    = response.description;
                 
                 row.appendChild(priceColumn); 
-                priceColumn.innerText = response.price;
+                priceColumn.innerText   = response.price;
                 
                 row.appendChild(stockColumn); 
-                stockColumn.innerText = response.stock;
+                stockColumn.innerText   = response.stock;
                 
                 row.appendChild(valFrColumn); 
-                valFrColumn.innerText = response.valid_from;
+                valFrColumn.innerText   = response.valid_from;
                 
                 row.appendChild(valToColumn); 
-                valToColumn.innerText = response.valid_to;
+                valToColumn.innerText   = response.valid_to;
 
-                row.appendChild(editItem);
-                editItem.appendChild(editBtn);                                                                                  // pro zeile zu den jeweiligen datensätze butten zu editieren platzieren
+                row.appendChild(btnColumn);
+                btnColumn.appendChild(btnContainer);
 
-                row.appendChild(delItem);
+                btnContainer.appendChild(editItem);                                                                                  // pro zeile zu den jeweiligen datensätze butten zu editieren platzieren
+                editItem.appendChild(editBtn);
+
+                btnContainer.appendChild(delItem);
                 delItem.appendChild(delBtn);                                                                                    // pro zeile zu den jeweiligen datensätze butten zu löschen platzieren
             }
         } else if (event.target.status == 401) {
