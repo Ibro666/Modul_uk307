@@ -1,5 +1,5 @@
 body {
-    height: 98vh;
+    /* height: 98vh; */
 }
 
 input {
@@ -10,23 +10,19 @@ input:hover, input:focus {
     border-color: rgb(69, 112, 5);
 }
 
+/* Login */
 .body-for-login-p {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 70%;
-    width: 60%;
-    position: absolute;
-    top: 15%;
-    bottom: 15%;
-    left: 20%;
-    right: 20%;
+    margin-top: 15%;
 }
 
 .forms-container {
-    height: 80%;
-    width: 60%;
+    width: 20%;
+    padding: 4%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     border-radius: 19px;
@@ -43,7 +39,6 @@ input:hover, input:focus {
     display: flex;
     justify-content: center;
     margin: 1%;
-    padding: 6%;
     padding-bottom: 1%;
 }
 
@@ -57,7 +52,7 @@ input:hover, input:focus {
     border-radius: 4em 1em / 1em 4em;
     margin: 1%;
     padding: 4%;
-    width: 70%;
+    width: 80%;
     font-size: 18px;
     box-shadow: inset 2px 5px 10px #bebebe;
     background: linear-gradient(315deg, #cacaca, #f0f0f0);
@@ -65,8 +60,7 @@ input:hover, input:focus {
 }
 
 .button {
-    padding: 0%;
-    padding-top: 4%;
+    padding-top: 13%;
 }
 
 .items button {
@@ -74,13 +68,13 @@ input:hover, input:focus {
     width: 60%;
     padding: 5%;
     background: #6ac97f;
-    box-shadow: -5px -5px 20px #b0b0b0dc, 
-                10px 10px 25px #ffffff
+    box-shadow: -3px -3px 15px #464545dc, 
+                5px 5px 15px #ffffff
 }
 
 .items button:active {
     background: linear-gradient(315deg, #6ac97f, #f0f0f0);
-    box-shadow: 0px 0px 0px #b0b0b0dc, 
+    box-shadow: 0px 0px 0px #464545dc, 
                 0px 0px 0px #ffffff
 }
 
@@ -132,13 +126,13 @@ input:hover, input:focus {
     width: 12%;
     padding: 1%;
     background: #6ac97f;
-    box-shadow: -5px -5px 20px #b0b0b0dc, 
-                10px 10px 25px #ffffff
+    box-shadow: -3px -3px 15px #464545dc, 
+                5px 5px 15px #ffffff
 }
 
 .nav-content button:active {
     background: linear-gradient(315deg, #6ac97f, #f0f0f0);
-    box-shadow: 0px 0px 0px #b0b0b0dc, 
+    box-shadow: 0px 0px 0px #464545dc, 
                 0px 0px 0px #ffffff;
 }
 
@@ -152,6 +146,10 @@ input:hover, input:focus {
                     22px 22px 44px #ffffff;
 }
 
+.content-title {
+    text-align: center;
+}
+
 .row-header {
     border-radius: 4em 1em / 1em 4em;
     border-right: #ffffff;
@@ -162,44 +160,80 @@ input:hover, input:focus {
 
 .row-container {
     display: grid;
-    grid-template-columns: 3% 10% 4% 8.1% 15% 7% 15% 4% 4.5% 9% 10% 10%;
+    grid-template-columns: 3% 10% 4% 8.1% 15% 7% 15% 4% 4.5% 15%;
     padding: 1%;
+    justify-content: center;
 }
 
 .add-btn-container {
-    width: 120%;
     background-color: rgba(53, 173, 221, 0.911);
     border-radius: 4em 1em / 1em 4em;
-    margin-left: -7%;
+    margin-left: 1%;
 }
 
 .items-row {
     display: grid;
-    grid-template-columns: 3% 10% 4% 8.1% 15% 7% 13% 4% 4.5% 9% 10% 10%;
+    grid-template-columns: 3% 10% 4% 8.1% 15% 7% 15% 4% 4.5% 15%;
+    justify-content: center;
     float: left;
     width: 100%;
-    padding: 1%;
+    text-align: center;
+    padding-top: 1%;
+    padding-bottom: 1%;
 }
 
 .product-table td {
     text-align: center;
 }
 
+.table-layout {
+    position: relative;
+    left: 20%;
+    right: 20%;
+}
+
+.row-container-cat {
+    display: grid;
+    grid-template-columns: 30% 10% 30% 25%;
+    justify-content: center;
+    padding: 1%;
+}
+
+.i-row-cat {
+    grid-template-columns: 30% 10% 30% 25%;
+}
+
+tr:nth-child(even) {
+    background: linear-gradient(315deg, #cacacad8, #f2f2f2);
+}
+
+/* Meldungen */
+.message {
+    color: rgb(0, 177, 53);
+    font-size: 18px;
+    text-align: center;
+    text-shadow: 5px 5px 5px #5e5e5e;
+}
+
 
 /* buttons */
 .add-btn {
-    margin: 0;
+    margin: 1%;
     padding: 4%;
-    width: 80%;
     border-radius: 4em 1em / 1em 4em;
     background: rgb(20, 172, 134);
-    box-shadow: -5px -5px 20px #b0b0b0dc, 
-                10px 10px 25px #ffffff;
+    box-shadow: -3px -3px 15px #464545dc, 
+                5px 5px 15px #aaebff;
+    width: 108%;
+}
+
+.add-btn-in-forms {
+    width: 100%;
 }
 
 .add-btn:active {
     background: linear-gradient(315deg, rgb(20, 172, 134), #f0f0f0);
-    box-shadow: 0px 0px 0px #b0b0b0dc, 
+    box-shadow: 0px 0px 0px #464545dc, 
                 0px 0px 0px #ffffff;
 }
 
@@ -208,24 +242,29 @@ input:hover, input:focus {
     
 }
 
+.row-btn-edit {
+    width: 50%;
+}
+
+.row-btn-del {
+    margin-left: 2%;
+    width: 50%;
+}
+
 .row-btn-edit button {
     margin: 1%;
     border-radius: 4em 1em / 1em 4em;
     padding: 6%;
     background: rgb(189, 177, 12);
-    box-shadow: -5px -5px 20px #b0b0b0dc, 
-                10px 10px 25px #ffffff;
-    width: 113%;
+    box-shadow: -3px -3px 15px #464545dc, 
+                5px 5px 15px #ffffff;
+    width: 100%;
 }
 
 .row-btn-edit button:active {
     background: linear-gradient(315deg, rgb(189, 177, 12), #f0f0f0);
-    box-shadow: 0px 0px 0px #b0b0b0dc, 
+    box-shadow: 0px 0px 0px #464545dc,
                 0px 0px 0px #ffffff;
-}
-
-.row-btn-del {
-    margin-left: 10%;
 }
 
 .row-btn-del button {
@@ -233,14 +272,29 @@ input:hover, input:focus {
     border-radius: 4em 1em / 1em 4em;
     padding: 6%;
     background: rgb(161, 7, 79);
-    box-shadow: -5px -5px 20px #b0b0b0dc, 
-                10px 10px 25px #ffffff;
-    width: 136%;
+    box-shadow: -3px -3px 15px #464545dc, 
+                5px 5px 15px #ffffff;
+    width: 100%;
 }
 
 .row-btn-del button:active {
     background: linear-gradient(315deg, rgb(161, 7, 79), #f0f0f0);
-    box-shadow: 0px 0px 0px #b0b0b0dc, 
+    box-shadow: 0px 0px 0px #464545dc, 
+                0px 0px 0px #ffffff;
+}
+
+.cansel-btn {
+    margin: 1%;
+    border-radius: 4em 1em / 1em 4em;
+    padding: 4%;
+    background: rgb(161, 7, 79);
+    box-shadow: -3px -3px 15px #464545dc, 
+                5px 5px 15px #ffffff;
+}
+
+.cansel-btn:active {
+    background: linear-gradient(315deg, rgb(161, 7, 79), #f0f0f0);
+    box-shadow: 0px 0px 0px #464545dc, 
                 0px 0px 0px #ffffff;
 }
 
@@ -250,6 +304,7 @@ input:hover, input:focus {
     justify-content: center;
     align-items: center;
     margin: 2%;
+    margin: 1%;
 }
 
 .item-containner {
@@ -264,4 +319,16 @@ input:hover, input:focus {
     box-shadow: inset 2px 5px 10px #bebebe;
     background: linear-gradient(315deg, #cacaca, #f0f0f0);
     color: #000000;
+}
+
+.item-btn {
+    display: grid;
+    grid-template-columns: 2fr 2fr;
+}
+
+.add-content {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    margin: 2%;
 }

@@ -12,7 +12,7 @@
     </nav>
     <div class="content-container">
         <div class="content" id="content">
-            <table class="product-table" id="product-table"></table>
+            
             <div class="input-data" id="input-data"></div>
         </div>
     </div>

@@ -8,11 +8,12 @@ const error         = document.getElementById("errors");
 const submitBtn     = document.getElementById("submit");
 
 function authenticate(login, passw) {
-    var authdate = '{"email":"' + login + '","password":"' + passw + '"}';                                                      // benutzer eingaben in json-format an den server weiter geben.
+    //var authdate = '{"email":"' + login + '","password":"' + passw + '"}';                                                      // benutzer eingaben in json-format an den server weiter geben.
 
+    var authdate = '{"username":"' + login + '","password":"' + passw + '"}';
     var request = new XMLHttpRequest();
-    request.open("POST", "http://localhost:8888/API/V1/Authenticate");
-    //request.open("POST", "https://campus.csbe.ch/sollberger-manuel/uek307/Authenticate");
+    //request.open("POST", "http://localhost:8888/API/V1/Authenticate");
+    request.open("POST", "https://campus.csbe.ch/sollberger-manuel/uek307/Authenticate");
     request.onload = loadedFact;
     request.send(authdate);                                                                                                     // beim post-request bekommt der send-methode form daten als parameter
 
