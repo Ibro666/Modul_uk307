@@ -8,18 +8,18 @@ const error         = document.getElementById("errors");
 const submitBtn     = document.getElementById("submit");
 
 function authenticate(login, passw) {
-    //var authdate = '{"email":"' + login + '","password":"' + passw + '"}';                                                      // benutzer eingaben in json-format an den server weiter geben.
-
+//    var authdate = '{"email":"' + login + '","password":"' + passw + '"}';                                                      // benutzer eingaben in json-format an den server weiter geben.
     var authdate = '{"username":"' + login + '","password":"' + passw + '"}';
+    
     var request = new XMLHttpRequest();
-    //request.open("POST", "http://localhost:8888/API/V1/Authenticate");
+//    request.open("POST", "http://localhost:8888/API/V1/Authenticate");
     request.open("POST", "https://campus.csbe.ch/sollberger-manuel/uek307/Authenticate");
     request.onload = loadedFact;
     request.send(authdate);                                                                                                     // beim post-request bekommt der send-methode form daten als parameter
 
     function loadedFact(event) {
         if (event.target.status === 200) {                                                                                      // wenn response ok ist dann soll die hauptseite geladen werden.
-            location.assign("./index-home.php");
+            location.assign("./view/index-home.php");
         } else if (event.target.status === 401) {
             error.innerText = "Die Authentifikation hat fehlgeschlagen!";
         } else if (event.target.status === 500) {
@@ -58,4 +58,10 @@ submitBtn.addEventListener("click", (e) => {
         pass.classList.remove("error-input");                                                                                   // beim aktivieren der passwortfeld soll der roter rand entfernt werden
         messagep.innerText = "";                                                                                                // fehler meldung entfernen
     });
-});  
+});
+
+pass.addEventListener("keypress", (e) => { 
+    if (e.key === "Enter") {                                                                                                    // Enter-button soll bestätigung des zugriffs auslösen
+        submitBtn.click();
+    }
+ });

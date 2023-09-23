@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="./stylesheet/stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="./view/stylesheet/stylesheet.css">
     <title>Authentifizierung</title>
 </head>
 <body>
@@ -27,6 +27,6 @@
         <div id="errors"></div>    
     </div>
 
-    <script src="../controller/authentication.js"></script>
+    <script src="./controller/authentication.js"></script>
 </body>
 </html>

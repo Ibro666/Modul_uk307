@@ -1,19 +1,44 @@
 const body = document.getElementsByTagName("body");
+const messageContainer = document.getElementById("message-container");
+messageContainer.classList.add("message-container");
 var messaCont = document.createElement("div");
+messaCont.classList.add("message-content");
+var messContCloser = document.createElement("span");
+messContCloser.classList.add("message-content-close");
 var messagePa = document.createElement("p");                                                                                    // fehlermeldungen oder hinweise in diesem paragraf ausgeben
 messagePa.setAttribute("class", "message");
-messaCont.appendChild(messagePa);
-body[0].appendChild(messagePa);
+
 
 const navCont = document.getElementById("nav-content");                                                                         // navigationleiste
-const table = document.createElement("table");
-var content = document.getElementById("content");                                                                               // formular abschnitt im index-file ansprechen
+const contContainer = document.getElementById("content-container");
+const content = document.getElementById("content");                                                                             // formular abschnitt im index-file ansprechen
+var table = document.createElement("table");
 var formsContainer = document.createElement("div");                                                                             // formular container
 formsContainer.setAttribute("class", "add-content");
 let temp = "";                                                                                                                  // im temp soll der aktuell geladene formular gespeichert werden.
 let pageC = "";                                                                                                                 // der aktuell geladene seite soll unabhängig von seiner inhalt bemerkt werden
 const title = document.createElement("h1");
 title.classList.add("content-title");
+
+// feedbacks zu den aktionen
+function getMessage(messageText) {
+    messageContainer.style.display = "block"
+    messContCloser.innerHTML = "&times;";                                                                                       // x zeichen hinzufügen
+    messContCloser.addEventListener("click", () =>  { clearMessage(); });                                                       // das messegefenster schliessen bei betätigen der x
+    messageContainer.appendChild(messaCont);
+    messagePa.innerText = messageText;
+    messaCont.appendChild(messContCloser);
+    messaCont.appendChild(messagePa);
+    messageContainer.appendChild(messaCont);
+}
+
+function clearMessage() {                                                                                                       // die methode entfernt das messagefenster generel
+    messageContainer.style.display = "none";
+    messagePa.innerHTML = "";
+    messaCont.innerHTML = "";
+}
+
+window.onclick = clearMessage;                                                                                                  // das messagefenster schliessen bei klicken bildfläche ausserhalb des fensters
 
 // seite wechseln
 const pagChan = document.createElement("button");                                                                               // in der navigationsleite soll ein button das wechseln zwischen Kategorie und produkt ermöglichen
@@ -64,7 +89,7 @@ logoutBtn.setAttribute("class", "logout-btn");
 logoutBtn.appendChild(logoutBtnText);
 navCont.appendChild(logoutBtn);
 logoutBtn.addEventListener("click", () => {  
-                                            location.href = "./login.php";
+                                            location.href = "../index.php";
                                           });
 
 // hinzufügen button erzeugen
@@ -78,24 +103,24 @@ function addNewItem() {                                                         
     return addBtn;
 }
 
-// neue produkte hinzufügen, die daten aus inputfelder müssen als paremeter mitgegeben werden
+// neue produkte oder kategorien hinzufügen, die daten aus inputfelder müssen als paremeter mitgegeben werden
 function addItems(sku, active, cat, name, img, desc, price, stock) {
     var request = new XMLHttpRequest();
     var str     = "";
 
     if (pageC > 0) {
-    //    request.open("POST", "http://localhost:8888/API/V1/Product/" + sku);
+//        request.open("POST", "http://localhost:8888/API/V1/Product/" + sku);
         request.open("PUT", "https://campus.csbe.ch/sollberger-manuel/uek307/Product/" + sku);
         str     = '{"sku":"' + sku + 
                   '","active":"' + active + 
                   '","category":"' + cat + 
                   '","name":"' + name + 
-                  '","image":"' + img + 
+                  '","product_image":"' + img + 
                   '","description":"' + desc + 
                   '","price":"' + price + 
                   '","stock":"' + stock + '"}';
     } else {
-     //   request.open("POST", "http://localhost:8888/API/V1/Category/" + name);
+//        request.open("POST", "http://localhost:8888/API/V1/Category/" + name);
         request.open("POST", "https://campus.csbe.ch/sollberger-manuel/uek307/Category");
         str     = '{"active":"' + active + 
                   '","name":"' + name + '"}';
@@ -104,18 +129,22 @@ function addItems(sku, active, cat, name, img, desc, price, stock) {
     request.send(str);
 
     function loadResponseMessage(event) {
-        if (event.target.status == 200 || event.target.status == 201) {
-//            var responseData = JSON.parse(event.target.responseText);
-            messagePa.innerText = "Eintrag wurde erstellt.";
-            //messagePa.innerText = responseData.massage;
+        if (event.target.status == 201 || event.target.status == 200) {                                                         // vom APT Category kommt in dem fall 200 zurück
+            getMessage("Eintrag wurde erstellt.");
         } else if (event.target.status == 404) {
-            messagePa.innerText = "Die Seite wurde nicht gefunden!";
+            getMessage("Die Seite wurde nicht gefunden!");
         } else if (event.target.status == 500) {
-            messagePa.innerText = "Server Fehler!";
+            getMessage("Server Fehler!");
         } else {
-            messagePa.innerText = "Beim laden der Produke ist Fehler auf geträten!";
+            getMessage("Beim laden der Produke ist Fehler auf geträten!");
         }
     }
+
+    if (pageC > 0) {
+        loadTableProduct();
+    } else {
+        loadTableCategory();
+    }   
 }
 
 // eine bestehende produkt oder Kategorie bearbeiten oder aktualisieren
@@ -124,18 +153,18 @@ function editItems(id, sku, active, cat, name, img, desc, price, stock) {
     var str     = "";
 
     if (pageC > 0) {
-    //    request.open("PUT", "http://localhost:8888/API/V1/Product/" + id);
+//        request.open("PUT", "http://localhost:8888/API/V1/Product/" + id);
         request.open("PUT", "https://campus.csbe.ch/sollberger-manuel/uek307/Product/" + id);
         str     = '{"sku":"' + sku + 
                   '","active":"' + active + 
                   '","category":"' + cat + 
                   '","name":"' + name + 
-                  '","image":"' + img + 
+                  '","product_image":"' + img + 
                   '","description":"' + desc + 
                   '","price":"' + price + 
                   '","stock":"' + stock + '"}';
     } else {
-   //     request.open("PUT", "http://localhost:8888/API/V1/Category/" + id);
+//        request.open("PUT", "http://localhost:8888/API/V1/Category/" + id);
         request.open("PUT", "https://campus.csbe.ch/sollberger-manuel/uek307/Category/" + id);
         str     = '{"active":"' + active + 
                   '","name":"' + name + '"}';
@@ -144,18 +173,22 @@ function editItems(id, sku, active, cat, name, img, desc, price, stock) {
     request.send(str);
 
     function loadResponseMessage(event) {
-        if (event.target.status == 201) {
-//            var responseData = JSON.parse(event.target.responseText);
-            messagePa.innerText = "Eintrag wurde angepasst!.";
-            //messagePa.innerText = responseData.massage;
+        if (event.target.status == 201 || event.target.status == 200) {
+            getMessage("Eintrag wurde angepasst!.");
         } else if (event.target.status == 404) {
-            messagePa.innerText = "Die Seite wurde nicht gefunden!";
+            getMessage("Es wurde keine zutreffende Eintrag gefunden!");
         } else if (event.target.status == 500) {
-            messagePa.innerText = "Server Fehler!";
+            getMessage("Server Fehler!");
         } else {
-            messagePa.innerText = "Beim laden der Produke ist Fehler auf geträten!";
+            getMessage("Beim laden der Produke ist Fehler auf geträten!");
         }
     }
+
+    if (pageC > 0) {
+        loadTableProduct();
+    } else {
+        loadTableCategory();
+    }   
 }
 
 // eine bestehende produkt oder kategorie löschen, produkt id muss mitgegeben werden
@@ -173,18 +206,22 @@ function deleteItems(id) {                                                      
     request.send();
 
     function loadResponseMessage(event) {
-        if (event.target.status == 200) {
-//            var responseData = JSON.parse(event.target.responseText);
-//            messagePa.innerText = responseData.massage;
-            messagePa.innerText = "Eintrag wurde gelöscht!";
+        if (event.target.status === 200) {
+            getMessage("Eintrag wurde gelöscht!");
         } else if (event.target.status == 404) {
-            messagePa.innerText = "Die Seite wurde nicht gefunden!";
+            getMessage("Die Seite wurde nicht gefunden!");
         } else if (event.target.status == 500) {
-            messagePa.innerText = "Server Fehler!";
+            getMessage("Server Fehler!");
         } else {
-            messagePa.innerText = "Beim laden der Produke ist Fehler auf geträten!";
+            getMessage("Beim laden der Produke ist Fehler auf geträten!");
         }
     }
+
+    if (pageC > 0) {
+        loadTableProduct();
+    } else {
+        loadTableCategory();
+    }                                                                                                                           // beim klichen der button soll der der entsprechende produkt gelöscht und der tabelle neugeladen werden. der stimmte produkt soll anhand der product_id festgestellt werden.
 }
 
 function addContent(status) {                                                                                                   // funktion erstellt eine formular, wo man neue daten eingeben kann um neue produkte hinzuzufügen oder auch die bestehen zu ändern
@@ -311,111 +348,105 @@ function addContent(status) {                                                   
         const addBtn = document.createElement("button");
         if (status > 0) {                                                                                                       // status 0 ist das aller erste datensatz, es kann nur eingefügt werden. falls der status höcher 0 ist handelt es sich um einen datensatz der schon existiert
             var addBtnText = document.createTextNode("Speichern");
-            addBtn.addEventListener('click', (e) => { 
-                                                         if (pageC > 0) {
-                                                            if (sku === "" || sku == null ||
-                                                                active === "" || active == null ||
-                                                                cat === "" || cat == null ||
-                                                                name === "" || name == null ||
-                                                                img === "" || img == null ||
-                                                                desc === "" || desc == null ||
-                                                                price === "" || price == null ||
-                                                                stock === "" || stock == null) {
-                                                                    erMessage.innerText = "Felder ausfüllen!";
-                                                                    erMessage.classList.add("error-message");
-                                                                    inFlSku.classList.add("error-input");
-                                                                    inFlAct.classList.add("error-input");
-                                                                    inFlCat.classList.add("error-input");
-                                                                    inFlNam.classList.add("error-input");
-                                                                    inFlImg.classList.add("error-input");
-                                                                    inFlDesc.classList.add("error-input");
-                                                                    inFlPri.classList.add("error-input");
-                                                                    inFlSt.classList.add("error-input");
-                                                            } else {
-                                                            	editItems( status                                                         // die werte welche ein benutzer eingegeben hat als parmeter mitgeben.
-                                                                	  ,sku 
-                                                                	  ,active 
-                                                                   	  ,cat 
-                                                                	  ,name 
-                                                                	  ,img 
-                                                                	  ,desc 
-                                                                	  ,price 
-                                                                	  ,stock );
-                                                                 loadTableProduct();
-                                                            }
+            addBtn.addEventListener('click', (e) => { if (pageC > 0) {
+                                                         if (sku === "" || sku == null ||
+                                                             active === "" || active == null ||
+                                                             cat === "" || cat == null ||
+                                                             name === "" || name == null ||
+                                                             img === "" || img == null ||
+                                                             desc === "" || desc == null ||
+                                                             price === "" || price == null ||
+                                                             stock === "" || stock == null) {
+                                                                 erMessage.innerText = "Felder ausfüllen!";
+                                                                 erMessage.classList.add("error-message");
+                                                                 inFlSku.classList.add("error-input");
+                                                                 inFlAct.classList.add("error-input");
+                                                                 inFlCat.classList.add("error-input");
+                                                                 inFlNam.classList.add("error-input");
+                                                                 inFlImg.classList.add("error-input");
+                                                                 inFlDesc.classList.add("error-input");
+                                                                 inFlPri.classList.add("error-input");
+                                                                 inFlSt.classList.add("error-input");
                                                          } else {
-                                                            if (active === "" || active == null ||
-                                                                name === "" || name == null) {
-                                                                    erMessage.innerText = "Felder ausfüllen!";
-                                                                    erMessage.classList.add("error-message");
-                                                                    inFlAct.classList.add("error-input");
-                                                                    inFlNam.classList.add("error-input");
-                                                            } else {
-                                                            	editItems( status                                                         // die werte welche ein benutzer eingegeben hat als parmeter mitgeben.
-                                                                	  ,sku 
-                                                                	  ,active 
-                                                                	  ,cat 
-                                                                	  ,name 
-                                                                	  ,img 
-                                                                	  ,desc 
-                                                                	  ,price 
-                                                                	  ,stock );
-                                                             	loadTableCategory();
-                                                            }
+                                                             editItems( status                                                         // die werte welche ein benutzer eingegeben hat als parmeter mitgeben.
+                                                                       ,sku 
+                                                                       ,active 
+                                                                       ,cat 
+                                                                       ,name 
+                                                                       ,img 
+                                                                       ,desc 
+                                                                       ,price 
+                                                                       ,stock );
                                                          }
+                                                      } else {
+                                                         if (active === "" || active == null ||
+                                                             name === "" || name == null) {
+                                                                 erMessage.innerText = "Felder ausfüllen!";
+                                                                 erMessage.classList.add("error-message");
+                                                                 inFlAct.classList.add("error-input");
+                                                                 inFlNam.classList.add("error-input");
+                                                         } else {
+                                                             editItems( status                                                         // die werte welche ein benutzer eingegeben hat als parmeter mitgeben.
+                                                                       ,sku 
+                                                                       ,active 
+                                                                       ,cat 
+                                                                       ,name 
+                                                                       ,img 
+                                                                       ,desc 
+                                                                       ,price 
+                                                                       ,stock );
+                                                         }
+                                                      }
                                                     });
         } else {
             var addBtnText = document.createTextNode("Hinzufügen");
-            addBtn.addEventListener('click', () => { 
-                                                         if (pageC > 0) {
-                                                            if (sku === "" || sku == null ||
-                                                                active === "" || active == null ||
-                                                                cat === "" || cat == null ||
-                                                                name === "" || name == null ||
-                                                                img === "" || img == null ||
-                                                                desc === "" || desc == null ||
-                                                                price === "" || price == null ||
-                                                                stock === "" || stock == null) {
-                                                                    erMessage.innerText = "Felder ausfüllen!";
-                                                                    erMessage.classList.add("error-message");
-                                                                    inFlSku.classList.add("error-input");
-                                                                    inFlAct.classList.add("error-input");
-                                                                    inFlCat.classList.add("error-input");
-                                                                    inFlNam.classList.add("error-input");
-                                                                    inFlImg.classList.add("error-input");
-                                                                    inFlDesc.classList.add("error-input");
-                                                                    inFlPri.classList.add("error-input");
-                                                                    inFlSt.classList.add("error-input");
-                                                            } else { 
+            addBtn.addEventListener('click', () => { if (pageC > 0) {
+                                                        if (sku === "" || sku == null ||
+                                                            active === "" || active == null ||
+                                                            cat === "" || cat == null ||
+                                                            name === "" || name == null ||
+                                                            img === "" || img == null ||
+                                                            desc === "" || desc == null ||
+                                                            price === "" || price == null ||
+                                                            stock === "" || stock == null) {
+                                                                erMessage.innerText = "Felder ausfüllen!";
+                                                                erMessage.classList.add("error-message");
+                                                                inFlSku.classList.add("error-input");
+                                                                inFlAct.classList.add("error-input");
+                                                                inFlCat.classList.add("error-input");
+                                                                inFlNam.classList.add("error-input");
+                                                                inFlImg.classList.add("error-input");
+                                                                inFlDesc.classList.add("error-input");
+                                                                inFlPri.classList.add("error-input");
+                                                                inFlSt.classList.add("error-input");
+                                                        } else { 
                                                             addItems( sku                                                              // die werte welche ein benutzer eingegeben hat als parmeter mitgeben
-                                                              ,active 
-                                                              ,cat 
-                                                              ,name 
-                                                              ,img
-                                                              ,desc
-                                                              ,price
-                                                              ,stock);
-                                                                loadTableProduct();
-                                                            }
-                                                         } else {
-                                                            if (active === "" || active == null ||
-                                                                name === "" || name == null) {
-                                                                    erMessage.innerText = "Felder ausfüllen!";
-                                                                    erMessage.classList.add("error-message");
-                                                                    inFlAct.classList.add("error-input");
-                                                                    inFlNam.classList.add("error-input");
-                                                            } else {
+                                                                     ,active 
+                                                                     ,cat 
+                                                                     ,name 
+                                                                     ,img
+                                                                     ,desc
+                                                                     ,price
+                                                                     ,stock);
+                                                        }
+                                                     } else {
+                                                        if (active === "" || active == null ||
+                                                            name === "" || name == null) {
+                                                                erMessage.innerText = "Felder ausfüllen!";
+                                                                erMessage.classList.add("error-message");
+                                                                inFlAct.classList.add("error-input");
+                                                                inFlNam.classList.add("error-input");
+                                                        } else {
                                                             addItems( sku                                                              // die werte welche ein benutzer eingegeben hat als parmeter mitgeben
-                                                              ,active 
-                                                              ,cat 
-                                                              ,name 
-                                                              ,img
-                                                              ,desc
-                                                              ,price
-                                                              ,stock);
-                                                                loadTableCategory();
-                                                            }
-                                                         }
+                                                                     ,active 
+                                                                     ,cat 
+                                                                     ,name 
+                                                                     ,img
+                                                                     ,desc
+                                                                     ,price
+                                                                     ,stock);
+                                                        }
+                                                     }
                                                     });
         }
         addBtn.appendChild(addBtnText);
@@ -544,24 +575,17 @@ function loadTableCategory(id) {
     rowHeader.classList.add("row-h-cat");
     rowContainer.classList.add("row-container-cat");
     addBtnContainer.classList.add("add-btn-container");
-    table.classList.add("table-layout");                                                                                        // da kategorie weniger inhalte als produkte hat soll es zentriert werden
 
     const tabId              = document.createElement("th");
     const tabAkt             = document.createElement("th");
     const tabName            = document.createElement("th");
-    //const tabValF            = document.createElement("th");
-    //const tabValT            = document.createElement("th");
     var thColId              = document.createTextNode("Kategorie-Nr.");
     var thAktive             = document.createTextNode("Status");
     var thName               = document.createTextNode("Bezeichnung");
-    //var thValFr              = document.createTextNode("Erfasst am:");
-    //var thValTo              = document.createTextNode("letzte Änderung");
 
     tabId.appendChild(thColId);
     tabAkt.appendChild(thAktive);
     tabName.appendChild(thName);
-    //tabValF.appendChild(thValFr);
-    //tabValT.appendChild(thValTo);
     tableHeaderBtnFild.appendChild(addBtnContainer);                                                                            // das butten um neue item hinzuzufügen in die spalte platzueren
     addBtnContainer.appendChild(addNewItem());
 
@@ -572,26 +596,21 @@ function loadTableCategory(id) {
     rowContainer.appendChild(tabId);
     rowContainer.appendChild(tabAkt);
     rowContainer.appendChild(tabName);
-    //rowContainer.appendChild(tabValF);
-    //rowContainer.appendChild(tabValT);
     rowContainer.appendChild(tableHeaderBtnFild);
 
     // tabelle befüllen
     function loadedFact(event) {
         var responseData = JSON.parse(event.target.responseText);                                                               // die daten aus dem json in die variable ziehen
 
-        if (event.target.status == 200) {                                                                                       // überprüfen ob die verbindung in ordnung ist und ein antwort vorhanden ist
-            for (var i = 0; i < responseData.length; i++) {
-                var response = responseData[i];
-                let cId = responseData[i].category_id;
-
+        if (event.target.status === 200) {                                                                                      // überprüfen ob die verbindung in ordnung ist und ein antwort vorhanden ist
+            if (id) {
                 // bearbeiten button in der zeile
                 const editBtn = document.createElement("button");                                                               // pro zeile der tabelle soll dem produkt entsprechende button zum bearbeiten der produkt erzeugt und ausgegeben
                 var editBtnText = document.createTextNode("Bearbeiten");
                 editBtn.appendChild(editBtnText);
                 editBtn.setAttribute("class", "edit-btn");
                 editBtn.setAttribute("type", "button");
-                editBtn.addEventListener('click', () => { content.appendChild(addContent(cId));                                 // beim klicken der butten soll ein formular ausgegeben werden. formular benötigt in dem fall ein product_id zu identifikation der zeile bzw. produkt
+                editBtn.addEventListener('click', () => { content.appendChild(addContent(responseData.category_id));            // beim klicken der butten soll ein formular ausgegeben werden. formular benötigt in dem fall ein product_id zu identifikation der zeile bzw. produkt
                                                         });
 
                 // löschen butten in der zeile
@@ -600,21 +619,13 @@ function loadTableCategory(id) {
                 delBtn.appendChild(delBtnText);
                 delBtn.setAttribute("class", "del-btn");
                 delBtn.setAttribute("type", "button");
-                delBtn.addEventListener('click', () => { deleteItems(cId);
-                                                         if (pageC > 0) {
-                                                             loadTableProduct();
-                                                         } else {
-                                                             loadTableCategory();
-                                                         }                                                                      // beim klichen der button soll der der entsprechende produkt gelöscht und der tabelle neugeladen werden. der stimmte produkt soll anhand der product_id festgestellt werden.
-                                                        });                                  
+                delBtn.addEventListener('click', () => { deleteItems(responseData.category_id); });                                  
 
                 // zeile und zellen erzeugen
                 var row = document.createElement("tr");
                 var idColumn = document.createElement("td");
                 var statColumn = document.createElement("td");
                 var nameColumn = document.createElement("td");
-                //var valFrColumn = document.createElement("td");
-                //var valToColumn = document.createElement("td");
                 var btnColumn = document.createElement("td");
                 var editItem = document.createElement("div");
                 var delItem = document.createElement("div");
@@ -630,19 +641,13 @@ function loadTableCategory(id) {
                 table.appendChild(row);
 
                 row.appendChild(idColumn);
-                idColumn.innerText = response.category_id;
+                idColumn.innerText = responseData.category_id;
 
                 row.appendChild(statColumn);
-                statColumn.innerText = response.active;
+                statColumn.innerText = responseData.active;
                 
                 row.appendChild(nameColumn); 
-                nameColumn.innerText = response.name;
-
-                //row.appendChild(valFrColumn); 
-                //valFrColumn.innerText = response.valid_from;
-                
-                //row.appendChild(valToColumn); 
-                //valToColumn.innerText = response.valid_to;
+                nameColumn.innerText = responseData.name;
 
                 row.appendChild(btnColumn);
                 btnColumn.appendChild(btnContainer);
@@ -652,13 +657,72 @@ function loadTableCategory(id) {
 
                 btnContainer.appendChild(delItem);
                 delItem.appendChild(delBtn);   
+            } else {
+                for (var i = 0; i < responseData.length; i++) {
+                    let response = "";
+                    response = responseData[i];
+    
+                    // bearbeiten button in der zeile
+                    const editBtn = document.createElement("button");                                                           // pro zeile der tabelle soll dem produkt entsprechende button zum bearbeiten der produkt erzeugt und ausgegeben
+                    var editBtnText = document.createTextNode("Bearbeiten");
+                    editBtn.appendChild(editBtnText);
+                    editBtn.setAttribute("class", "edit-btn");
+                    editBtn.setAttribute("type", "button");
+                    editBtn.addEventListener('click', () => { content.appendChild(addContent(response.category_id));            // beim klicken der butten soll ein formular ausgegeben werden. formular benötigt in dem fall ein product_id zu identifikation der zeile bzw. produkt
+                                                            });
+    
+                    // löschen butten in der zeile
+                    const delBtn = document.createElement("button");                                                            // pro zeile der tabelle soll auch ein dem produkt betreffend butten erzeugt werden, um den produkt löschen zu ermöglichen
+                    var delBtnText = document.createTextNode("Löschen");
+                    delBtn.appendChild(delBtnText);
+                    delBtn.setAttribute("class", "del-btn");
+                    delBtn.setAttribute("type", "button");
+                    delBtn.addEventListener('click', () => { deleteItems(response.category_id); });                                  
+    
+                    // zeile und zellen erzeugen
+                    var row = document.createElement("tr");
+                    var idColumn = document.createElement("td");
+                    var statColumn = document.createElement("td");
+                    var nameColumn = document.createElement("td");
+                    var btnColumn = document.createElement("td");
+                    var editItem = document.createElement("div");
+                    var delItem = document.createElement("div");
+                    var btnContainer = document.createElement("div");
+    
+                    row.classList.add("items-row");
+                    row.classList.add("i-row-cat");
+                    editItem.classList.add("row-btn-edit");
+                    delItem.classList.add("row-btn-del");
+                    btnContainer.classList.add("row-btns");
+    
+                    // zeile in die tabelle einfügen
+                    table.appendChild(row);
+    
+                    row.appendChild(idColumn);
+                    idColumn.innerText = response.category_id;
+    
+                    row.appendChild(statColumn);
+                    statColumn.innerText = response.active;
+                    
+                    row.appendChild(nameColumn); 
+                    nameColumn.innerText = response.name;
+    
+                    row.appendChild(btnColumn);
+                    btnColumn.appendChild(btnContainer);
+    
+                    btnContainer.appendChild(editItem);                                                                         // pro zeile zu den jeweiligen datensätze butten zu editieren platzieren
+                    editItem.appendChild(editBtn);
+    
+                    btnContainer.appendChild(delItem);
+                    delItem.appendChild(delBtn);   
+                }
             }
         } else if (event.target.status == 404) {
-            messagePa.innerText = "Die Seite wurde nicht gefunden!";
+            getMessage("Es wurde keine zutreffende Eintrag gefunden!");
         } else if (event.target.status == 500) {
-            messagePa.innerText = "Server Fehler!";
+            getMessage("Server Fehler!");
         } else {
-            messagePa.innerText = "Beim laden der Produke ist Fehler auf geträten!";
+            getMessage("Beim laden der Produke ist Fehler auf geträten!");
         }
     }
     pageC = 0;
@@ -696,8 +760,6 @@ function loadTableProduct(id) {                                                 
         const tabDesc = document.createElement("th");
         const tabPrice = document.createElement("th");
         const tabSto = document.createElement("th");
-        //const tabValF = document.createElement("th");
-        //const tabValT = document.createElement("th");
         const tableHeaderBtnFild = document.createElement("th");                                                                // am tabellen anfage einen feld definieren, welche einen button enthalten soll
         const addBtnContainer = document.createElement("div");
         rowHeader.classList.add("row-header");
@@ -714,8 +776,6 @@ function loadTableProduct(id) {                                                 
         var thDesc = document.createTextNode("Beschreibung");
         var thPrice = document.createTextNode("Preis");
         var thStock = document.createTextNode("Menge");
-        //var thValFr = document.createTextNode("Erfasst am:");
-        //var thValTo = document.createTextNode("letzte Änderung");
 
         tabId.appendChild(thColId);                                                                                             // spalten titel in die jeweilige spalte zuweisen
         tabSku.appendChild(thSku);
@@ -726,8 +786,6 @@ function loadTableProduct(id) {                                                 
         tabDesc.appendChild(thDesc);
         tabPrice.appendChild(thPrice);
         tabSto.appendChild(thStock);
-        //tabValF.appendChild(thValFr);
-        //tabValT.appendChild(thValTo);
         tableHeaderBtnFild.appendChild(addBtnContainer);                                                                        // das butten um neue item hinzuzufügen in die spalte platzueren
         addBtnContainer.appendChild(addNewItem());
 
@@ -743,25 +801,20 @@ function loadTableProduct(id) {                                                 
         rowContainer.appendChild(tabImg);
         rowContainer.appendChild(tabDesc);
         rowContainer.appendChild(tabPrice);
-        rowContainer.appendChild(tabSto);  
-        //rowContainer.appendChild(tabValF);
-        //rowContainer.appendChild(tabValT);
+        rowContainer.appendChild(tabSto);
         rowContainer.appendChild(tableHeaderBtnFild);    
 
         if (event.target.status === 200) {                                                                                      // überprüfen ob die anfrage und die authentifikation erfolgreich war
-            var responseData = JSON.parse(event.target.responseText);                                                           // die daten aus dem json in die variable ziehen            
-
-            for (var i = 0; i < responseData.length; i++) {
-                var response = responseData[i];
-                let pSku = responseData[i].sku;
-
+            if (id) {
+                var responseData = JSON.parse(event.target.responseText);                                                       // die daten aus dem json in die variable ziehen
+                
                 // bearbeiten button in der zeile
                 const editBtn = document.createElement("button");                                                               // pro zeile der tabelle soll dem produkt entsprechende button zum bearbeiten der produkt erzeugt und ausgegeben
                 var editBtnText = document.createTextNode("Bearbeiten");
                 editBtn.appendChild(editBtnText);
                 editBtn.setAttribute("class", "edit-btn");
                 editBtn.setAttribute("type", "button");
-                editBtn.addEventListener('click', () => { content.appendChild(addContent(pSku)) });                              // beim klicken der butten soll ein formular ausgegeben werden. formular benötigt in dem fall ein product_id zu identifikation der zeile bzw. produkt
+                editBtn.addEventListener('click', () => { content.appendChild(addContent(responseData.sku)); });                // beim klicken der butten soll ein formular ausgegeben werden. formular benötigt in dem fall ein product_id zu identifikation der zeile bzw. produkt
 
                 // löschen butten in der zeile
                 const delBtn = document.createElement("button");                                                                // pro zeile der tabelle soll auch ein dem produkt betreffend butten erzeugt werden, um den produkt löschen zu ermöglichen
@@ -769,7 +822,7 @@ function loadTableProduct(id) {                                                 
                 delBtn.appendChild(delBtnText);
                 delBtn.setAttribute("class", "del-btn");
                 delBtn.setAttribute("type", "button");
-                delBtn.addEventListener('click', () => { deleteItems(pSku), loadTableProduct() });                               // beim klichen der button soll der der entsprechende produkt gelöscht und der tabelle neugeladen werden. der stimmte produkt soll anhand der product_id festgestellt werden.
+                delBtn.addEventListener('click', () => { deleteItems(responseData.sku); });                                     // beim klichen der button soll der der entsprechende produkt gelöscht und der tabelle neugeladen werden. der stimmte produkt soll anhand der product_id festgestellt werden.
 
                 // zeile und zellen erzeugen
                 var row = document.createElement("tr");
@@ -782,8 +835,6 @@ function loadTableProduct(id) {                                                 
                 var descColumn = document.createElement("td");
                 var priceColumn = document.createElement("td");
                 var stockColumn = document.createElement("td");
-                //var valFrColumn = document.createElement("td");
-                //var valToColumn = document.createElement("td");
                 var btnColumn = document.createElement("td");
                 var editItem = document.createElement("div");
                 var delItem = document.createElement("div");
@@ -798,38 +849,31 @@ function loadTableProduct(id) {                                                 
                 table.appendChild(row);
 
                 row.appendChild(idColumn);                                                                                      // jeweilige spaltenwerte pro zeile platzieren
-                idColumn.innerText = response.product_id;                                                                       // spaltenwerte in einer zeile ausgeben
+                idColumn.innerText = responseData.product_id;                                                                   // spaltenwerte in einer zeile ausgeben
             
                 row.appendChild(skuColumn);
-                skuColumn.innerText = response.sku;
+                skuColumn.innerText = responseData.sku;
 
                 row.appendChild(statColumn);
-                statColumn.innerText = response.active;
+                statColumn.innerText = responseData.active;
 
                 row.appendChild(idCat);
-                idCat.innerText = response.id_category;
-                
+                idCat.innerText = responseData.id_category;
+
                 row.appendChild(nameColumn); 
-                nameColumn.innerText = response.name;
+                nameColumn.innerText = responseData.name;
 
                 row.appendChild(imageColumn);
-//                imageColumn.innerText = response.image;
-                imageColumn.innerText = response.product_image;
-                
+                imageColumn.innerText = responseData.product_image;
+
                 row.appendChild(descColumn); 
-                descColumn.innerText = response.description;
-                
+                descColumn.innerText = responseData.description;
+
                 row.appendChild(priceColumn); 
-                priceColumn.innerText = response.price;
-                
+                priceColumn.innerText = responseData.price;
+
                 row.appendChild(stockColumn); 
-                stockColumn.innerText = response.stock;
-                
-                //row.appendChild(valFrColumn); 
-                //valFrColumn.innerText = response.valid_from;
-                
-                //row.appendChild(valToColumn); 
-                //valToColumn.innerText = response.valid_to;
+                stockColumn.innerText = responseData.stock;
 
                 row.appendChild(btnColumn);
                 btnColumn.appendChild(btnContainer);
@@ -838,15 +882,97 @@ function loadTableProduct(id) {                                                 
                 editItem.appendChild(editBtn);
 
                 btnContainer.appendChild(delItem);
-                delItem.appendChild(delBtn);                                                                                    // pro zeile zu den jeweiligen datensätze butten zu löschen platzieren
+                delItem.appendChild(delBtn);                                                                                    // pro zeile zu den jeweiligen datensätze butten zu löschen platzieren                
+            } else {
+                var responseData = JSON.parse(event.target.responseText);                                                       // die daten aus dem json in die variable ziehen
+
+                for (var i = 0; i < responseData.length; i++) {
+                    let response = "";
+                    response = responseData[i];
+
+                    // bearbeiten button in der zeile
+                    const editBtn = document.createElement("button");                                                           // pro zeile der tabelle soll dem produkt entsprechende button zum bearbeiten der produkt erzeugt und ausgegeben
+                    var editBtnText = document.createTextNode("Bearbeiten");
+                    editBtn.appendChild(editBtnText);
+                    editBtn.setAttribute("class", "edit-btn");
+                    editBtn.setAttribute("type", "button");
+                    editBtn.addEventListener('click', () => { content.appendChild(addContent(response.sku)); });                // beim klicken der butten soll ein formular ausgegeben werden. formular benötigt in dem fall ein product_id zu identifikation der zeile bzw. produkt
+
+                    // löschen butten in der zeile
+                    const delBtn = document.createElement("button");                                                            // pro zeile der tabelle soll auch ein dem produkt betreffend butten erzeugt werden, um den produkt löschen zu ermöglichen
+                    var delBtnText = document.createTextNode("Löschen");
+                    delBtn.appendChild(delBtnText);
+                    delBtn.setAttribute("class", "del-btn");
+                    delBtn.setAttribute("type", "button");
+                    delBtn.addEventListener('click', () => { deleteItems(response.sku); });                                     // beim klichen der button soll der der entsprechende produkt gelöscht und der tabelle neugeladen werden. der stimmte produkt soll anhand der product_id festgestellt werden.
+
+                    // zeile und zellen erzeugen
+                    var row = document.createElement("tr");
+                    var idColumn = document.createElement("td");
+                    var statColumn = document.createElement("td");
+                    var skuColumn = document.createElement("td");
+                    var idCat = document.createElement("td");
+                    var nameColumn = document.createElement("td");
+                    var imageColumn = document.createElement("td");
+                    var descColumn = document.createElement("td");
+                    var priceColumn = document.createElement("td");
+                    var stockColumn = document.createElement("td");
+                    var btnColumn = document.createElement("td");
+                    var editItem = document.createElement("div");
+                    var delItem = document.createElement("div");
+                    var btnContainer = document.createElement("div");
+
+                    row.classList.add("items-row");
+                    editItem.classList.add("row-btn-edit");
+                    delItem.classList.add("row-btn-del");
+                    btnContainer.classList.add("row-btns");
+
+                    // zeile in die tabelle einfügen
+                    table.appendChild(row);
+
+                    row.appendChild(idColumn);                                                                                  // jeweilige spaltenwerte pro zeile platzieren
+                    idColumn.innerText = response.product_id;                                                                   // spaltenwerte in einer zeile ausgeben
+                
+                    row.appendChild(skuColumn);
+                    skuColumn.innerText = response.sku;
+
+                    row.appendChild(statColumn);
+                    statColumn.innerText = response.active;
+
+                    row.appendChild(idCat);
+                    idCat.innerText = response.id_category;
+
+                    row.appendChild(nameColumn); 
+                    nameColumn.innerText = response.name;
+
+                    row.appendChild(imageColumn);
+                    imageColumn.innerText = response.product_image;
+
+                    row.appendChild(descColumn); 
+                    descColumn.innerText = response.description;
+
+                    row.appendChild(priceColumn); 
+                    priceColumn.innerText = response.price;
+
+                    row.appendChild(stockColumn); 
+                    stockColumn.innerText = response.stock;
+
+                    row.appendChild(btnColumn);
+                    btnColumn.appendChild(btnContainer);
+
+                    btnContainer.appendChild(editItem);                                                                         // pro zeile zu den jeweiligen datensätze butten zu editieren platzieren
+                    editItem.appendChild(editBtn);
+
+                    btnContainer.appendChild(delItem);
+                    delItem.appendChild(delBtn);                                                                                // pro zeile zu den jeweiligen datensätze butten zu löschen platzieren
+                }
             }
         } else if (event.target.status == 404) {
-            messagePa.innerText = "Die Seite wurde nicht gefunden!";
-            location.href = "../view/login.php";
+            getMessage("Es wurde keine zutreffende Eintrag gefunden!");
         } else if (event.target.status == 500) {
-            messagePa.innerText = "Server Fehler!";
+            getMessage("Server Fehler!");
         } else {
-            messagePa.innerText = "Beim laden der Produke ist Fehler auf geträten!";
+            getMessage("Beim laden der Produke ist Fehler auf geträten!");
         }
     }
     pageC = 1;

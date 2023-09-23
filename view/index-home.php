@@ -16,7 +16,7 @@
             <div class="input-data" id="input-data"></div>
         </div>
     </div>
-
+    <div id="message-container"></div>
     <script src="../controller/main-controller.js"></script>
 </body>
 </html>
